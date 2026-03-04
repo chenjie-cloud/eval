@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="极简在线二维码生成工具：粘贴网址或文本，自动生成可右键保存的二维码图片。" />
+    <title>极简二维码生成</title>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="top">
+        <div class="brand">
+          <div class="title">极简二维码</div>
+          <div class="subtitle">粘贴网址或文本链接，1 秒内自动生成，可右键保存 PNG</div>
+        </div>
+      </header>
+
+      <section class="panel" aria-label="二维码生成器">
+        <div class="grid">
+          <div class="left">
+            <label class="label" for="qr-input">输入内容</label>
+            <div class="inputWrap">
+              <textarea
+                id="qr-input"
+                class="input"
+                placeholder="粘贴你的网址或文本链接"
+                autocomplete="off"
+                autocapitalize="off"
+                spellcheck="false"
+              ></textarea>
+              <button id="qr-clear" class="clear" type="button" aria-label="清空输入">清空</button>
+            </div>
+            <div class="meta">
+              <div id="qr-hint" class="hint" aria-live="polite"></div>
+              <div id="qr-count" class="count"></div>
+            </div>
+          </div>
+
+          <div class="right" aria-label="二维码预览">
+            <div class="previewCard">
+              <div class="previewTop">
+                <div class="previewTitle">二维码</div>
+                <div class="previewNote">右键保存图片</div>
+              </div>
+              <div class="previewStage">
+                <img id="qr-img" class="qrImg" alt="二维码预览" draggable="false" />
+                <div id="qr-empty" class="empty">
+                  在左侧输入内容后，这里会出现二维码
+                </div>
+                <div id="qr-error" class="error" role="status"></div>
+              </div>
+            </div>
+            <footer class="foot">
+              本工具不会上传或存储你的输入内容
+            </footer>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
+

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>极简二维码生成</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="top">
+        <div class="brand">
+          <h1 class="title">二维码</h1>
+          <p class="subtitle">粘贴即可生成 · 右键保存 PNG</p>
+        </div>
+      </header>
+
+      <section class="grid" aria-label="二维码生成">
+        <div class="panel inputPanel">
+          <label class="label" for="payload">粘贴你的网址或文本链接</label>
+          <textarea
+            id="payload"
+            class="textarea"
+            autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false"
+            placeholder="https://example.com 或任意文本"
+          ></textarea>
+          <div class="actions">
+            <button class="ghost" type="button" id="clearBtn">清空</button>
+            <div class="status" role="status" aria-live="polite" id="status"></div>
+          </div>
+        </div>
+
+        <div class="panel outputPanel">
+          <div class="qrFrame" id="qrFrame">
+            <img
+              id="qrImage"
+              class="qrImage"
+              alt="生成的二维码"
+              draggable="false"
+            />
+            <div class="empty" id="emptyState">
+              输入内容后将自动生成二维码
+            </div>
+          </div>
+          <div class="hint">
+            可直接右键图片“另存为”，无需登录与安装
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <span>本地生成 · 不上传输入内容</span>
+      </footer>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+    <script src="./app.js" defer></script>
+  </body>
+</html>

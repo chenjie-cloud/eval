@@ -11,6 +11,15 @@ node_modules
 dist
 dist-ssr
 *.local
+.env
+.env.*.local
+coverage
+*.tsbuildinfo
+.eslintcache
+.vite
+.cache
+.tmp
+tmp
 
 # Editor directories and files
 .vscode/*

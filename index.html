@@ -1,0 +1,1194 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>简化版坦克大战（Canvas 单文件）</title>
+    <style>
+      :root{
+        --bg:#0b0e14;
+        --panel:#111725;
+        --panel2:#0e1320;
+        --text:#d8e0ff;
+        --muted:#92a0c7;
+        --accent:#77f2a1;
+        --danger:#ff5c7a;
+        --warn:#ffd166;
+        --brick:#c35a3a;
+        --steel:#92a3b6;
+        --grass:#1d9b54;
+      }
+      *{box-sizing:border-box}
+      body{
+        margin:0;
+        background:radial-gradient(1200px 700px at 50% 25%, #18203a 0%, var(--bg) 55%, #05070c 100%);
+        color:var(--text);
+        font:14px/1.4 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        min-height:100vh;
+        display:grid;
+        place-items:center;
+        padding:18px;
+      }
+      .shell{
+        width:min(980px, 100%);
+        display:grid;
+        grid-template-columns: 1fr 320px;
+        gap:16px;
+        align-items:start;
+      }
+      @media (max-width: 920px){
+        .shell{grid-template-columns:1fr; }
+      }
+      .stage{
+        background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+        border:1px solid rgba(255,255,255,.10);
+        border-radius:14px;
+        padding:14px;
+        position:relative;
+        overflow:hidden;
+        box-shadow: 0 18px 70px rgba(0,0,0,.55);
+      }
+      canvas{
+        width:100%;
+        height:auto;
+        display:block;
+        background:linear-gradient(180deg, #0b1020, #070a12);
+        border-radius:10px;
+        image-rendering: pixelated;
+      }
+      .side{
+        background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+        border:1px solid rgba(255,255,255,.10);
+        border-radius:14px;
+        padding:14px;
+        box-shadow: 0 18px 70px rgba(0,0,0,.55);
+      }
+      .title{
+        font-weight:800;
+        letter-spacing:.5px;
+        margin:2px 0 10px;
+        font-size:15px;
+      }
+      .kv{display:grid; grid-template-columns: 120px 1fr; gap:8px 10px; margin:10px 0 14px;}
+      .k{color:var(--muted)}
+      .v{color:var(--text)}
+      .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+      .btn{
+        appearance:none;
+        border:1px solid rgba(255,255,255,.14);
+        background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+        color:var(--text);
+        padding:8px 10px;
+        border-radius:10px;
+        cursor:pointer;
+        transition:transform .08s ease, border-color .12s ease, background .12s ease;
+        user-select:none;
+      }
+      .btn:hover{border-color:rgba(255,255,255,.24)}
+      .btn:active{transform:translateY(1px)}
+      .btn.primary{border-color: rgba(119,242,161,.40); box-shadow:0 0 0 1px rgba(119,242,161,.14) inset;}
+      .btn.danger{border-color: rgba(255,92,122,.45); box-shadow:0 0 0 1px rgba(255,92,122,.18) inset;}
+      .sep{height:1px; background:rgba(255,255,255,.10); margin:14px 0;}
+      label.opt{display:flex; gap:10px; align-items:flex-start; color:var(--muted)}
+      label.opt input{margin-top:2px}
+      select{
+        width:100%;
+        margin-top:8px;
+        border-radius:10px;
+        border:1px solid rgba(255,255,255,.14);
+        background:rgba(0,0,0,.25);
+        color:var(--text);
+        padding:8px 10px;
+        outline:none;
+      }
+      .hint{color:var(--muted); font-size:12px; margin-top:8px}
+      .kbd{
+        display:inline-block;
+        padding:1px 6px;
+        border:1px solid rgba(255,255,255,.18);
+        border-bottom-color: rgba(255,255,255,.28);
+        border-radius:7px;
+        background:rgba(0,0,0,.22);
+        color:var(--text);
+        font-size:12px;
+        line-height:18px;
+      }
+      .overlay{
+        position:absolute;
+        inset:14px;
+        border-radius:10px;
+        display:none;
+        place-items:center;
+        background:radial-gradient(900px 500px at 50% 40%, rgba(17,23,37,.92), rgba(6,8,12,.86));
+        border:1px solid rgba(255,255,255,.10);
+        padding:18px;
+        text-align:center;
+      }
+      .overlay.show{display:grid}
+      .overlay h1{margin:0 0 8px; font-size:18px; letter-spacing:.4px}
+      .overlay p{margin:0 0 14px; color:var(--muted); max-width:58ch}
+      .badge{
+        display:inline-flex;
+        gap:8px;
+        align-items:center;
+        padding:5px 10px;
+        border:1px solid rgba(255,255,255,.14);
+        border-radius:999px;
+        background:rgba(0,0,0,.22);
+        color:var(--text);
+        margin-bottom:12px;
+      }
+      .dot{width:8px; height:8px; border-radius:99px; background:var(--accent)}
+      .dot.danger{background:var(--danger)}
+      .dot.warn{background:var(--warn)}
+      .footer{color:var(--muted); font-size:12px; margin-top:10px}
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <div class="stage">
+        <canvas id="c" width="512" height="640" aria-label="game canvas"></canvas>
+        <div id="overlay" class="overlay show" role="dialog" aria-modal="true">
+          <div>
+            <div id="badge" class="badge"><span class="dot"></span><span id="badgeText">准备开始</span></div>
+            <h1 id="ovTitle">简化版坦克大战</h1>
+            <p id="ovDesc">方向键移动，空格射击。摧毁敌方坦克并保护底部基地。砖墙可摧毁，铁墙不可穿透，草地只遮挡视线。</p>
+            <div class="row" style="justify-content:center">
+              <button id="btnStart" class="btn primary">开始</button>
+              <button id="btnContinue" class="btn" style="display:none">继续上一局</button>
+              <button id="btnRestart" class="btn danger" style="display:none">重开</button>
+            </div>
+            <div class="footer">快捷键：<span class="kbd">Space</span> 射击 · <span class="kbd">R</span> 重开 · <span class="kbd">P</span> 暂停</div>
+          </div>
+        </div>
+      </div>
+      <aside class="side">
+        <div class="title">状态面板</div>
+        <div class="kv">
+          <div class="k">生命</div><div class="v" id="uiLives">-</div>
+          <div class="k">击杀 / 目标</div><div class="v" id="uiKills">-</div>
+          <div class="k">基地</div><div class="v" id="uiBase">-</div>
+          <div class="k">攻击提升</div><div class="v" id="uiAtk">-</div>
+          <div class="k">难度</div><div class="v" id="uiDiff">-</div>
+          <div class="k">局时</div><div class="v" id="uiTime">-</div>
+        </div>
+
+        <div class="sep"></div>
+
+        <div class="title">设置（可选项）</div>
+        <label class="opt">
+          <input id="optTimeLimit" type="checkbox" />
+          <span>启用 3 分钟限时（超时判平局）</span>
+        </label>
+        <div style="margin-top:10px">
+          <div style="color:var(--muted)">难度分层（影响敌方速度 / 射速 / 同屏子弹数）</div>
+          <select id="optDifficulty">
+            <option value="easy">简单</option>
+            <option value="normal" selected>普通</option>
+            <option value="hard">困难</option>
+          </select>
+        </div>
+        <div class="hint">
+          存档说明：继续上一局会恢复地图破坏、击杀数、生命与倒计时，但敌方与子弹会重置（简化实现）。
+        </div>
+
+        <div class="sep"></div>
+        <div class="row">
+          <button id="btnSave" class="btn">手动存档</button>
+          <button id="btnClearSave" class="btn danger">清除存档</button>
+        </div>
+        <div class="hint">
+          运行方法：将本文件保存为 <span class="kbd">index.html</span>，用浏览器打开即可（Chrome/Edge/Firefox）。
+        </div>
+      </aside>
+    </div>
+
+    <script>
+      /*
+        简化版“坦克大战”（单文件 Canvas）
+
+        p1（必须实现）
+        - 玩家：方向键移动，空格射击（直线子弹），射速限制
+        - AI：敌方自动生成、随机移动与射击
+        - 地图：砖墙/铁墙/草地；砖墙可被子弹摧毁；铁墙阻挡子弹不穿透；草地不阻挡移动但遮挡视线
+        - 胜负：击杀达标胜利；玩家生命耗尽或基地被毁失败；胜利/失败界面可重试
+        - 道具：击毁指定敌人掉落 ATK（攻击提升）/ LIFE（生命增加）
+
+        p2（可选/简化）
+        - 3 分钟限时（可开关）
+        - 射击冷却、转向间隔（防卡键/滥用）
+        - localStorage 存档（简化：恢复地图与数值，敌人重置）
+        - 难度分层（参数化）
+      */
+
+      const canvas = document.getElementById("c");
+      const ctx = canvas.getContext("2d", { alpha: false });
+
+      const ui = {
+        lives: document.getElementById("uiLives"),
+        kills: document.getElementById("uiKills"),
+        base: document.getElementById("uiBase"),
+        atk: document.getElementById("uiAtk"),
+        diff: document.getElementById("uiDiff"),
+        time: document.getElementById("uiTime"),
+      };
+
+      const overlay = document.getElementById("overlay");
+      const badge = document.getElementById("badge");
+      const badgeText = document.getElementById("badgeText");
+      const ovTitle = document.getElementById("ovTitle");
+      const ovDesc = document.getElementById("ovDesc");
+      const btnStart = document.getElementById("btnStart");
+      const btnRestart = document.getElementById("btnRestart");
+      const btnContinue = document.getElementById("btnContinue");
+
+      const optTimeLimit = document.getElementById("optTimeLimit");
+      const optDifficulty = document.getElementById("optDifficulty");
+      const btnSave = document.getElementById("btnSave");
+      const btnClearSave = document.getElementById("btnClearSave");
+
+      const W = canvas.width;
+      const H = canvas.height;
+
+      const TILE = 32;
+      const GRID_W = Math.floor(W / TILE);
+      const GRID_H = Math.floor(H / TILE);
+
+      const TILE_EMPTY = 0;
+      const TILE_BRICK = 1;
+      const TILE_STEEL = 2;
+      const TILE_GRASS = 3;
+
+      const SAVE_KEY = "mini-battlecity-save-v1";
+
+      const DIFF = {
+        easy: {
+          label: "简单",
+          enemySpeed: 86,
+          enemyFireCooldownMs: 1200,
+          enemyFireChance: 0.22,
+          spawnIntervalMs: 1400,
+          maxAliveEnemies: 3,
+          maxEnemyBullets: 3,
+        },
+        normal: {
+          label: "普通",
+          enemySpeed: 102,
+          enemyFireCooldownMs: 900,
+          enemyFireChance: 0.28,
+          spawnIntervalMs: 1100,
+          maxAliveEnemies: 4,
+          maxEnemyBullets: 5,
+        },
+        hard: {
+          label: "困难",
+          enemySpeed: 122,
+          enemyFireCooldownMs: 680,
+          enemyFireChance: 0.36,
+          spawnIntervalMs: 900,
+          maxAliveEnemies: 5,
+          maxEnemyBullets: 7,
+        },
+      };
+
+      function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+      function rand(min, max) { return min + Math.random() * (max - min); }
+      function randi(min, max) { return Math.floor(rand(min, max + 1)); }
+      function nowMs() { return performance.now(); }
+      function rectsOverlap(a, b) {
+        return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+      }
+      function fmtTime(ms) {
+        if (ms == null) return "-";
+        const s = Math.max(0, Math.floor(ms / 1000));
+        const m = Math.floor(s / 60);
+        const ss = String(s % 60).padStart(2, "0");
+        return `${m}:${ss}`;
+      }
+
+      function makeDefaultMap() {
+        const map = Array.from({ length: GRID_H }, () => Array(GRID_W).fill(TILE_EMPTY));
+
+        for (let x = 0; x < GRID_W; x++) {
+          map[0][x] = TILE_STEEL;
+          map[GRID_H - 1][x] = TILE_STEEL;
+        }
+        for (let y = 0; y < GRID_H; y++) {
+          map[y][0] = TILE_STEEL;
+          map[y][GRID_W - 1] = TILE_STEEL;
+        }
+
+        for (let y = 2; y < GRID_H - 3; y += 2) {
+          for (let x = 2; x < GRID_W - 2; x += 3) {
+            map[y][x] = TILE_BRICK;
+            if (Math.random() < 0.35) map[y][x + 1] = TILE_BRICK;
+            if (Math.random() < 0.20) map[y + 1][x] = TILE_BRICK;
+          }
+        }
+
+        for (let y = 3; y < GRID_H - 6; y += 4) {
+          for (let x = 3; x < GRID_W - 3; x += 4) {
+            if (Math.random() < 0.45) map[y][x] = TILE_STEEL;
+          }
+        }
+
+        for (let y = 5; y < GRID_H - 5; y++) {
+          for (let x = 2; x < GRID_W - 2; x++) {
+            if (Math.random() < 0.07) map[y][x] = TILE_GRASS;
+          }
+        }
+
+        const bx = Math.floor(GRID_W / 2) - 1;
+        const by = GRID_H - 3;
+        for (let y = by - 1; y <= by + 1; y++) {
+          for (let x = bx - 1; x <= bx + 2; x++) {
+            if (y === by && (x === bx || x === bx + 1)) continue;
+            map[y][x] = TILE_BRICK;
+          }
+        }
+        map[by - 1][bx] = TILE_STEEL;
+        map[by - 1][bx + 1] = TILE_STEEL;
+
+        return map;
+      }
+
+      function tileAt(map, tx, ty) {
+        if (tx < 0 || ty < 0 || tx >= GRID_W || ty >= GRID_H) return TILE_STEEL;
+        return map[ty][tx];
+      }
+
+      function setTile(map, tx, ty, v) {
+        if (tx < 0 || ty < 0 || tx >= GRID_W || ty >= GRID_H) return;
+        map[ty][tx] = v;
+      }
+
+      function tilesInRect(map, rect) {
+        const minX = Math.floor(rect.x / TILE);
+        const minY = Math.floor(rect.y / TILE);
+        const maxX = Math.floor((rect.x + rect.w - 0.001) / TILE);
+        const maxY = Math.floor((rect.y + rect.h - 0.001) / TILE);
+        const out = [];
+        for (let ty = minY; ty <= maxY; ty++) {
+          for (let tx = minX; tx <= maxX; tx++) {
+            out.push({ tx, ty, t: tileAt(map, tx, ty) });
+          }
+        }
+        return out;
+      }
+
+      function rectHitsSolidTiles(map, rect) {
+        const tiles = tilesInRect(map, rect);
+        for (const it of tiles) {
+          if (it.t === TILE_BRICK || it.t === TILE_STEEL) return true;
+        }
+        return false;
+      }
+
+      function bulletHitsTile(map, x, y) {
+        const tx = Math.floor(x / TILE);
+        const ty = Math.floor(y / TILE);
+        const t = tileAt(map, tx, ty);
+        return { tx, ty, t };
+      }
+
+      function dirVec(dir) {
+        if (dir === "up") return { x: 0, y: -1 };
+        if (dir === "down") return { x: 0, y: 1 };
+        if (dir === "left") return { x: -1, y: 0 };
+        return { x: 1, y: 0 };
+      }
+
+      function drawRoundedRect(x, y, w, h, r) {
+        const rr = Math.min(r, w / 2, h / 2);
+        ctx.beginPath();
+        ctx.moveTo(x + rr, y);
+        ctx.arcTo(x + w, y, x + w, y + h, rr);
+        ctx.arcTo(x + w, y + h, x, y + h, rr);
+        ctx.arcTo(x, y + h, x, y, rr);
+        ctx.arcTo(x, y, x + w, y, rr);
+        ctx.closePath();
+      }
+
+      function drawTank(tank) {
+        const body = tank.team === "player" ? "#8ee7ff" : "#ffb454";
+        const edge = tank.team === "player" ? "rgba(142,231,255,.35)" : "rgba(255,180,84,.32)";
+        const { x, y, w, h } = tank;
+        ctx.save();
+        ctx.translate(x + w / 2, y + h / 2);
+
+        const rot = tank.dir === "up" ? -Math.PI / 2 : tank.dir === "down" ? Math.PI / 2 : tank.dir === "left" ? Math.PI : 0;
+        ctx.rotate(rot);
+
+        ctx.fillStyle = body;
+        ctx.strokeStyle = edge;
+        ctx.lineWidth = 2;
+        drawRoundedRect(-w / 2, -h / 2, w, h, 6);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = "rgba(0,0,0,.35)";
+        drawRoundedRect(-w / 2 + 3, -h / 2 + 5, w - 6, h - 10, 5);
+        ctx.fill();
+
+        ctx.fillStyle = tank.team === "player" ? "#c7ffdb" : "#ffe0b8";
+        drawRoundedRect(1, -3, w / 2 + 6, 6, 3);
+        ctx.fill();
+
+        ctx.fillStyle = tank.team === "player" ? "#061018" : "#1a0d05";
+        ctx.beginPath();
+        ctx.arc(-4, 0, 5, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (tank.invulnMs > 0) {
+          const a = 0.25 + 0.25 * Math.sin(nowMs() / 70);
+          ctx.strokeStyle = `rgba(119,242,161,${a})`;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(0, 0, w * 0.70, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      function drawBullet(b) {
+        ctx.fillStyle = b.team === "player" ? "#a2ffbf" : "#ff6b86";
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      function drawTiles(map, layer) {
+        for (let y = 0; y < GRID_H; y++) {
+          for (let x = 0; x < GRID_W; x++) {
+            const t = map[y][x];
+            if (layer === "solid") {
+              if (t === TILE_BRICK) {
+                const px = x * TILE, py = y * TILE;
+                ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--brick").trim();
+                ctx.fillRect(px, py, TILE, TILE);
+                ctx.fillStyle = "rgba(255,255,255,.08)";
+                ctx.fillRect(px + 2, py + 2, TILE - 4, 3);
+                ctx.fillStyle = "rgba(0,0,0,.20)";
+                ctx.fillRect(px + 2, py + TILE - 5, TILE - 4, 3);
+              } else if (t === TILE_STEEL) {
+                const px = x * TILE, py = y * TILE;
+                ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--steel").trim();
+                ctx.fillRect(px, py, TILE, TILE);
+                ctx.strokeStyle = "rgba(0,0,0,.25)";
+                ctx.lineWidth = 2;
+                ctx.strokeRect(px + 2, py + 2, TILE - 4, TILE - 4);
+                ctx.strokeStyle = "rgba(255,255,255,.12)";
+                ctx.strokeRect(px + 5, py + 5, TILE - 10, TILE - 10);
+              }
+            } else if (layer === "grass") {
+              if (t === TILE_GRASS) {
+                const px = x * TILE, py = y * TILE;
+                ctx.save();
+                ctx.globalAlpha = 0.75;
+                ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--grass").trim();
+                ctx.fillRect(px, py, TILE, TILE);
+                ctx.globalAlpha = 0.25;
+                ctx.fillStyle = "#0b2f18";
+                for (let i = 0; i < 7; i++) {
+                  const gx = px + randi(0, TILE - 2);
+                  const gy = py + randi(0, TILE - 6);
+                  ctx.fillRect(gx, gy, 2, randi(6, 14));
+                }
+                ctx.restore();
+              }
+            }
+          }
+        }
+      }
+
+      function drawBase(base) {
+        const { x, y, w, h } = base;
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.fillStyle = base.alive ? "#f5d061" : "#3a2b1a";
+        ctx.strokeStyle = base.alive ? "rgba(255,209,102,.35)" : "rgba(255,255,255,.10)";
+        ctx.lineWidth = 2;
+        drawRoundedRect(0, 0, w, h, 10);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = "rgba(0,0,0,.30)";
+        drawRoundedRect(8, 10, w - 16, h - 20, 8);
+        ctx.fill();
+
+        ctx.fillStyle = base.alive ? "#fff3c4" : "rgba(255,255,255,.14)";
+        ctx.beginPath();
+        ctx.moveTo(w / 2, 14);
+        ctx.lineTo(w - 18, h / 2);
+        ctx.lineTo(w / 2, h - 14);
+        ctx.lineTo(18, h / 2);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function drawPowerUp(p) {
+        ctx.save();
+        ctx.translate(p.x + p.w / 2, p.y + p.h / 2);
+        const pulse = 1 + 0.05 * Math.sin(nowMs() / 110);
+        ctx.scale(pulse, pulse);
+        ctx.fillStyle = p.type === "atk" ? "rgba(119,242,161,.95)" : "rgba(255,209,102,.95)";
+        ctx.strokeStyle = "rgba(0,0,0,.25)";
+        ctx.lineWidth = 2;
+        drawRoundedRect(-p.w / 2, -p.h / 2, p.w, p.h, 10);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = "rgba(0,0,0,.35)";
+        ctx.font = "bold 12px ui-monospace, monospace";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(p.type === "atk" ? "ATK" : "+1", 0, 1);
+        ctx.restore();
+      }
+
+      function drawHUD(state) {
+        ctx.save();
+        ctx.globalAlpha = 0.9;
+        ctx.fillStyle = "rgba(0,0,0,.28)";
+        ctx.fillRect(0, 0, W, 34);
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = "rgba(255,255,255,.14)";
+        ctx.fillRect(0, 34, W, 1);
+
+        ctx.fillStyle = "#d8e0ff";
+        ctx.font = "12px ui-monospace, monospace";
+        const left = `Lives: ${state.player.lives}   Kills: ${state.kills}/${state.targetKills}   Diff: ${DIFF[state.difficulty].label}`;
+        ctx.fillText(left, 10, 22);
+        const right = state.timeLimitEnabled ? `Time: ${fmtTime(state.timeLeftMs)}` : "";
+        if (right) {
+          const w = ctx.measureText(right).width;
+          ctx.fillText(right, W - 10 - w, 22);
+        }
+        ctx.restore();
+      }
+
+      function makePlayer() {
+        return {
+          team: "player",
+          x: Math.floor(W / 2) - 14,
+          y: H - 86,
+          w: 28,
+          h: 28,
+          dir: "up",
+          speed: 140,
+          lives: 3,
+          maxLives: 6,
+          invulnMs: 1400,
+          atkBuffMs: 0,
+          lastShotMs: -9999,
+          lastTurnMs: -9999,
+        };
+      }
+
+      function makeEnemy(spawn) {
+        return {
+          team: "enemy",
+          x: spawn.x,
+          y: spawn.y,
+          w: 28,
+          h: 28,
+          dir: "down",
+          speed: 100,
+          hp: 1,
+          lastShotMs: -9999,
+          lastDecisionMs: -9999,
+          decisionHoldMs: randi(700, 1500),
+          dropTag: Math.random() < 0.34,
+        };
+      }
+
+      function makeBase() {
+        const w = TILE * 2;
+        const h = TILE * 2;
+        return {
+          x: Math.floor(W / 2) - w / 2,
+          y: H - h - 4,
+          w,
+          h,
+          alive: true,
+        };
+      }
+
+      function makeBullet(fromTank, speed, damage) {
+        const v = dirVec(fromTank.dir);
+        const cx = fromTank.x + fromTank.w / 2;
+        const cy = fromTank.y + fromTank.h / 2;
+        const off = 18;
+        return {
+          team: fromTank.team,
+          x: cx + v.x * off,
+          y: cy + v.y * off,
+          vx: v.x * speed,
+          vy: v.y * speed,
+          r: 3.2,
+          damage,
+          alive: true,
+        };
+      }
+
+      function makePowerUp(x, y, type) {
+        return {
+          x: x - 14,
+          y: y - 14,
+          w: 28,
+          h: 28,
+          type,
+          alive: true,
+          ttlMs: 12000,
+        };
+      }
+
+      function makeParticles(x, y, color, n) {
+        const out = [];
+        for (let i = 0; i < n; i++) {
+          const a = rand(0, Math.PI * 2);
+          const s = rand(40, 170);
+          out.push({
+            x, y,
+            vx: Math.cos(a) * s,
+            vy: Math.sin(a) * s,
+            lifeMs: rand(180, 420),
+            ageMs: 0,
+            color,
+          });
+        }
+        return out;
+      }
+
+      function drawParticles(particles, dtMs) {
+        for (const p of particles) {
+          p.ageMs += dtMs;
+          p.x += p.vx * (dtMs / 1000);
+          p.y += p.vy * (dtMs / 1000);
+          p.vx *= 0.92;
+          p.vy *= 0.92;
+        }
+        for (let i = particles.length - 1; i >= 0; i--) {
+          if (particles[i].ageMs >= particles[i].lifeMs) particles.splice(i, 1);
+        }
+        for (const p of particles) {
+          const t = 1 - p.ageMs / p.lifeMs;
+          ctx.globalAlpha = 0.65 * t;
+          ctx.fillStyle = p.color;
+          ctx.fillRect(p.x, p.y, 2.2, 2.2);
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      const keys = new Set();
+      window.addEventListener("keydown", (e) => {
+        if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Space","KeyR","KeyP"].includes(e.code)) e.preventDefault();
+        keys.add(e.code);
+      });
+      window.addEventListener("keyup", (e) => keys.delete(e.code));
+
+      function hasSave() {
+        try { return !!localStorage.getItem(SAVE_KEY); } catch { return false; }
+      }
+
+      function saveState(state) {
+        const payload = {
+          v: 1,
+          ts: Date.now(),
+          difficulty: state.difficulty,
+          timeLimitEnabled: state.timeLimitEnabled,
+          timeLeftMs: state.timeLeftMs,
+          kills: state.kills,
+          enemiesSpawned: state.enemiesSpawned,
+          targetKills: state.targetKills,
+          baseAlive: state.base.alive,
+          player: {
+            lives: state.player.lives,
+            atkBuffMs: state.player.atkBuffMs,
+          },
+          map: state.map,
+        };
+        localStorage.setItem(SAVE_KEY, JSON.stringify(payload));
+      }
+
+      function loadState() {
+        const raw = localStorage.getItem(SAVE_KEY);
+        if (!raw) return null;
+        const data = JSON.parse(raw);
+        if (!data || data.v !== 1) return null;
+        return data;
+      }
+
+      function clearSave() {
+        localStorage.removeItem(SAVE_KEY);
+      }
+
+      function setOverlay(mode, meta = {}) {
+        overlay.classList.add("show");
+        btnStart.style.display = mode === "menu" ? "inline-block" : "none";
+        btnContinue.style.display = mode === "menu" && hasSave() ? "inline-block" : "none";
+        btnRestart.style.display = mode !== "menu" ? "inline-block" : "none";
+
+        const dot = badge.querySelector(".dot");
+        dot.classList.remove("danger", "warn");
+
+        if (mode === "menu") {
+          badgeText.textContent = "准备开始";
+          ovTitle.textContent = "简化版坦克大战";
+          ovDesc.textContent = "方向键移动，空格射击。摧毁敌方坦克并保护底部基地。砖墙可摧毁，铁墙不可穿透，草地只遮挡视线。";
+        } else if (mode === "win") {
+          badgeText.textContent = "胜利";
+          dot.classList.add("warn");
+          ovTitle.textContent = "你赢了";
+          ovDesc.textContent = `已消灭 ${meta.kills} 辆敌方坦克。按 R 或点击“重开”再来一局。`;
+        } else if (mode === "lose") {
+          badgeText.textContent = "失败";
+          dot.classList.add("danger");
+          ovTitle.textContent = meta.reason === "base" ? "基地被摧毁" : "生命耗尽";
+          ovDesc.textContent = "按 R 或点击“重开”重新挑战。";
+        } else if (mode === "draw") {
+          badgeText.textContent = "平局";
+          dot.classList.add("warn");
+          ovTitle.textContent = "时间到";
+          ovDesc.textContent = "局时结束判平局。按 R 或点击“重开”重新开始。";
+        } else if (mode === "pause") {
+          badgeText.textContent = "暂停";
+          dot.classList.add("warn");
+          ovTitle.textContent = "已暂停";
+          ovDesc.textContent = "按 P 继续。你也可以此时手动存档。";
+        }
+      }
+
+      function hideOverlay() {
+        overlay.classList.remove("show");
+      }
+
+      function spawnPoints() {
+        return [
+          { x: TILE * 2 + 2, y: TILE * 2 + 2 },
+          { x: W / 2 - 14, y: TILE * 2 + 2 },
+          { x: W - TILE * 3 - 12, y: TILE * 2 + 2 },
+        ];
+      }
+
+      function canPlaceTank(state, x, y) {
+        const rect = { x, y, w: 28, h: 28 };
+        if (rectHitsSolidTiles(state.map, rect)) return false;
+        if (rectsOverlap(rect, state.base)) return false;
+        if (rectsOverlap(rect, state.player)) return false;
+        for (const e of state.enemies) if (rectsOverlap(rect, e)) return false;
+        return true;
+      }
+
+      function trySpawnEnemy(state) {
+        const cfg = DIFF[state.difficulty];
+        if (state.enemiesSpawned >= state.targetKills) return;
+        if (state.enemies.length >= cfg.maxAliveEnemies) return;
+        const t = nowMs();
+        if (t - state.lastSpawnMs < cfg.spawnIntervalMs) return;
+        const pts = spawnPoints();
+        for (let i = 0; i < pts.length; i++) {
+          const p = pts[randi(0, pts.length - 1)];
+          if (canPlaceTank(state, p.x, p.y)) {
+            const e = makeEnemy(p);
+            e.speed = cfg.enemySpeed;
+            e.dir = "down";
+            state.enemies.push(e);
+            state.enemiesSpawned++;
+            state.lastSpawnMs = t;
+            return;
+          }
+        }
+        state.lastSpawnMs = t;
+      }
+
+      function countEnemyBullets(state) {
+        let n = 0;
+        for (const b of state.bullets) if (b.alive && b.team === "enemy") n++;
+        return n;
+      }
+
+      function shootFromTank(state, tank) {
+        const t = nowMs();
+        const cfg = DIFF[state.difficulty];
+
+        if (tank.team === "player") {
+          const baseCooldown = 360;
+          const boostedCooldown = 170;
+          const cooldown = tank.atkBuffMs > 0 ? boostedCooldown : baseCooldown;
+          if (t - tank.lastShotMs < cooldown) return;
+          tank.lastShotMs = t;
+          const speed = tank.atkBuffMs > 0 ? 380 : 300;
+          const damage = 1;
+          state.bullets.push(makeBullet(tank, speed, damage));
+          state.particles.push(...makeParticles(tank.x + tank.w / 2, tank.y + tank.h / 2, "rgba(162,255,191,1)", 10));
+          return;
+        }
+
+        if (countEnemyBullets(state) >= cfg.maxEnemyBullets) return;
+        if (t - tank.lastShotMs < cfg.enemyFireCooldownMs) return;
+        if (Math.random() > cfg.enemyFireChance) return;
+        tank.lastShotMs = t;
+        const speed = 270;
+        const damage = 1;
+        state.bullets.push(makeBullet(tank, speed, damage));
+        state.particles.push(...makeParticles(tank.x + tank.w / 2, tank.y + tank.h / 2, "rgba(255,107,134,1)", 8));
+      }
+
+      function moveTank(state, tank, dx, dy, dt) {
+        const nx = tank.x + dx * tank.speed * dt;
+        const ny = tank.y + dy * tank.speed * dt;
+
+        const rectX = { x: nx, y: tank.y, w: tank.w, h: tank.h };
+        if (!rectHitsSolidTiles(state.map, rectX) && !rectsOverlap(rectX, state.base)) {
+          tank.x = clamp(nx, 2, W - tank.w - 2);
+        }
+
+        const rectY = { x: tank.x, y: ny, w: tank.w, h: tank.h };
+        if (!rectHitsSolidTiles(state.map, rectY) && !rectsOverlap(rectY, state.base)) {
+          tank.y = clamp(ny, 36, H - tank.h - 2);
+        }
+      }
+
+      function updatePlayer(state, dt, dtMs) {
+        const p = state.player;
+        if (p.invulnMs > 0) p.invulnMs = Math.max(0, p.invulnMs - dtMs);
+        if (p.atkBuffMs > 0) p.atkBuffMs = Math.max(0, p.atkBuffMs - dtMs);
+
+        let dx = 0, dy = 0;
+        const wantUp = keys.has("ArrowUp");
+        const wantDown = keys.has("ArrowDown");
+        const wantLeft = keys.has("ArrowLeft");
+        const wantRight = keys.has("ArrowRight");
+
+        if (wantUp) dy -= 1;
+        if (wantDown) dy += 1;
+        if (wantLeft) dx -= 1;
+        if (wantRight) dx += 1;
+
+        const t = nowMs();
+        const turnCooldown = 65;
+        if (t - p.lastTurnMs > turnCooldown) {
+          if (dy < 0) { p.dir = "up"; p.lastTurnMs = t; }
+          else if (dy > 0) { p.dir = "down"; p.lastTurnMs = t; }
+          else if (dx < 0) { p.dir = "left"; p.lastTurnMs = t; }
+          else if (dx > 0) { p.dir = "right"; p.lastTurnMs = t; }
+        }
+
+        const len = Math.hypot(dx, dy);
+        if (len > 0) {
+          dx /= len;
+          dy /= len;
+          moveTank(state, p, dx, dy, dt);
+        }
+
+        if (keys.has("Space")) shootFromTank(state, p);
+      }
+
+      function updateEnemyAI(state, e, dt, dtMs) {
+        const t = nowMs();
+        if (t - e.lastDecisionMs > e.decisionHoldMs) {
+          e.lastDecisionMs = t;
+          e.decisionHoldMs = randi(600, 1400);
+          e.dir = ["up", "down", "left", "right"][randi(0, 3)];
+        }
+
+        const v = dirVec(e.dir);
+        const before = { x: e.x, y: e.y };
+        moveTank(state, e, v.x, v.y, dt);
+        const moved = Math.hypot(e.x - before.x, e.y - before.y);
+        if (moved < 0.2) {
+          e.lastDecisionMs = -9999;
+          e.decisionHoldMs = randi(250, 600);
+        }
+
+        shootFromTank(state, e);
+      }
+
+      function updateBullets(state, dt, dtMs) {
+        for (const b of state.bullets) {
+          if (!b.alive) continue;
+          b.x += b.vx * dt;
+          b.y += b.vy * dt;
+
+          if (b.x < -10 || b.y < -10 || b.x > W + 10 || b.y > H + 10) {
+            b.alive = false;
+            continue;
+          }
+
+          const hit = bulletHitsTile(state.map, b.x, b.y);
+          if (hit.t === TILE_BRICK) {
+            setTile(state.map, hit.tx, hit.ty, TILE_EMPTY);
+            b.alive = false;
+            state.particles.push(...makeParticles(b.x, b.y, "rgba(255,209,102,1)", 14));
+            continue;
+          }
+          if (hit.t === TILE_STEEL) {
+            b.alive = false;
+            state.particles.push(...makeParticles(b.x, b.y, "rgba(146,163,182,1)", 12));
+            continue;
+          }
+
+          if (state.base.alive && rectsOverlap({ x: b.x - b.r, y: b.y - b.r, w: b.r * 2, h: b.r * 2 }, state.base)) {
+            b.alive = false;
+            state.base.alive = false;
+            state.particles.push(...makeParticles(b.x, b.y, "rgba(255,92,122,1)", 28));
+            state.end("lose", { reason: "base" });
+            continue;
+          }
+
+          if (b.team === "enemy") {
+            if (state.player.invulnMs <= 0 && rectsOverlap({ x: b.x - b.r, y: b.y - b.r, w: b.r * 2, h: b.r * 2 }, state.player)) {
+              b.alive = false;
+              state.particles.push(...makeParticles(b.x, b.y, "rgba(255,92,122,1)", 18));
+              state.player.lives--;
+              if (state.player.lives <= 0) {
+                state.end("lose", { reason: "lives" });
+              } else {
+                state.respawnPlayer();
+              }
+              continue;
+            }
+          } else {
+            for (const e of state.enemies) {
+              if (rectsOverlap({ x: b.x - b.r, y: b.y - b.r, w: b.r * 2, h: b.r * 2 }, e)) {
+                b.alive = false;
+                e.hp -= b.damage;
+                state.particles.push(...makeParticles(b.x, b.y, "rgba(119,242,161,1)", 14));
+                if (e.hp <= 0) state.killEnemy(e);
+                break;
+              }
+            }
+          }
+        }
+
+        for (let i = state.bullets.length - 1; i >= 0; i--) {
+          if (!state.bullets[i].alive) state.bullets.splice(i, 1);
+        }
+      }
+
+      function updatePowerUps(state, dt, dtMs) {
+        for (const p of state.powerUps) {
+          if (!p.alive) continue;
+          p.ttlMs -= dtMs;
+          if (p.ttlMs <= 0) {
+            p.alive = false;
+            continue;
+          }
+
+          if (rectsOverlap(p, state.player)) {
+            p.alive = false;
+            if (p.type === "atk") {
+              const DURATION = 12000;
+              state.player.atkBuffMs = DURATION;
+              state.particles.push(...makeParticles(state.player.x + state.player.w / 2, state.player.y + state.player.h / 2, "rgba(119,242,161,1)", 26));
+            } else if (p.type === "life") {
+              state.player.lives = Math.min(state.player.maxLives, state.player.lives + 1);
+              state.particles.push(...makeParticles(state.player.x + state.player.w / 2, state.player.y + state.player.h / 2, "rgba(255,209,102,1)", 22));
+            }
+          }
+        }
+        for (let i = state.powerUps.length - 1; i >= 0; i--) {
+          if (!state.powerUps[i].alive) state.powerUps.splice(i, 1);
+        }
+      }
+
+      function createGameState({ difficulty, timeLimitEnabled, fromSave } = {}) {
+        const st = {
+          mode: "menu",
+          difficulty: difficulty || "normal",
+          timeLimitEnabled: !!timeLimitEnabled,
+          timeLeftMs: timeLimitEnabled ? 3 * 60 * 1000 : null,
+          map: makeDefaultMap(),
+          base: makeBase(),
+          player: makePlayer(),
+          enemies: [],
+          bullets: [],
+          powerUps: [],
+          particles: [],
+          kills: 0,
+          targetKills: 12,
+          enemiesSpawned: 0,
+          lastSpawnMs: -9999,
+          lastAutoSaveMs: -9999,
+          paused: false,
+          end: (result, meta = {}) => {},
+          respawnPlayer: () => {},
+          killEnemy: (enemy) => {},
+        };
+
+        st.end = (result, meta = {}) => {
+          if (st.mode !== "playing" && st.mode !== "pause") return;
+          st.mode = result;
+          st.paused = false;
+          setOverlay(result, { ...meta, kills: st.kills });
+          try { saveState(st); } catch {}
+        };
+
+        st.respawnPlayer = () => {
+          st.player.x = Math.floor(W / 2) - 14;
+          st.player.y = H - 86;
+          st.player.dir = "up";
+          st.player.invulnMs = 1500;
+          st.bullets.length = 0;
+        };
+
+        st.killEnemy = (enemy) => {
+          const idx = st.enemies.indexOf(enemy);
+          if (idx >= 0) st.enemies.splice(idx, 1);
+          st.kills++;
+
+          const shouldDrop = enemy.dropTag || (st.kills % 3 === 0);
+          if (shouldDrop) {
+            const type = (st.kills % 2 === 0) ? "atk" : "life";
+            st.powerUps.push(makePowerUp(enemy.x + enemy.w / 2, enemy.y + enemy.h / 2, type));
+          }
+          st.particles.push(...makeParticles(enemy.x + enemy.w / 2, enemy.y + enemy.h / 2, "rgba(255,180,84,1)", 22));
+
+          if (st.kills >= st.targetKills) st.end("win", { kills: st.kills });
+        };
+
+        if (fromSave) {
+          try {
+            const data = loadState();
+            if (data) {
+              st.difficulty = data.difficulty in DIFF ? data.difficulty : st.difficulty;
+              st.timeLimitEnabled = !!data.timeLimitEnabled;
+              st.timeLeftMs = st.timeLimitEnabled ? (typeof data.timeLeftMs === "number" ? data.timeLeftMs : 3 * 60 * 1000) : null;
+              st.kills = typeof data.kills === "number" ? data.kills : 0;
+              st.enemiesSpawned = typeof data.enemiesSpawned === "number" ? data.enemiesSpawned : 0;
+              st.targetKills = typeof data.targetKills === "number" ? data.targetKills : st.targetKills;
+              st.base.alive = !!data.baseAlive;
+              if (data.player) {
+                st.player.lives = clamp(data.player.lives ?? st.player.lives, 1, st.player.maxLives);
+                st.player.atkBuffMs = clamp(data.player.atkBuffMs ?? 0, 0, 60000);
+                st.player.invulnMs = 1200;
+              }
+              if (Array.isArray(data.map) && data.map.length === GRID_H) {
+                st.map = data.map.map((row, y) => {
+                  if (!Array.isArray(row) || row.length !== GRID_W) return st.map[y];
+                  return row.map((t) => (t === TILE_EMPTY || t === TILE_BRICK || t === TILE_STEEL || t === TILE_GRASS) ? t : TILE_EMPTY);
+                });
+              }
+            }
+          } catch {}
+        }
+
+        return st;
+      }
+
+      let state = createGameState({ difficulty: optDifficulty.value, timeLimitEnabled: optTimeLimit.checked });
+      setOverlay("menu");
+
+      function syncUI() {
+        ui.lives.textContent = `${state.player.lives} / ${state.player.maxLives}`;
+        ui.kills.textContent = `${state.kills} / ${state.targetKills}`;
+        ui.base.textContent = state.base.alive ? "完好" : "已毁";
+        ui.atk.textContent = state.player.atkBuffMs > 0 ? `${fmtTime(state.player.atkBuffMs)}（不叠加，重复拾取刷新时长）` : "无";
+        ui.diff.textContent = DIFF[state.difficulty].label;
+        ui.time.textContent = state.timeLimitEnabled ? fmtTime(state.timeLeftMs) : "关闭";
+      }
+
+      function startGame({ fromSave } = {}) {
+        const diff = optDifficulty.value;
+        const tl = optTimeLimit.checked;
+        state = createGameState({ difficulty: diff, timeLimitEnabled: tl, fromSave });
+        state.mode = "playing";
+        hideOverlay();
+        syncUI();
+      }
+
+      function restartGame() {
+        startGame({ fromSave: false });
+      }
+
+      btnStart.addEventListener("click", () => startGame({ fromSave: false }));
+      btnRestart.addEventListener("click", () => restartGame());
+      btnContinue.addEventListener("click", () => startGame({ fromSave: true }));
+
+      btnSave.addEventListener("click", () => {
+        try {
+          if (state.mode === "playing" || state.mode === "pause") saveState(state);
+          setOverlay(state.mode === "pause" ? "pause" : "menu");
+        } catch {}
+        btnContinue.style.display = hasSave() ? "inline-block" : "none";
+      });
+      btnClearSave.addEventListener("click", () => {
+        try { clearSave(); } catch {}
+        btnContinue.style.display = "none";
+      });
+
+      let lastMs = nowMs();
+      function loop() {
+        const t = nowMs();
+        const dtMs = clamp(t - lastMs, 0, 34);
+        const dt = dtMs / 1000;
+        lastMs = t;
+
+        ctx.fillStyle = "#070a12";
+        ctx.fillRect(0, 0, W, H);
+
+        if (state.mode === "playing") {
+          if (state.timeLimitEnabled) {
+            state.timeLeftMs = Math.max(0, state.timeLeftMs - dtMs);
+            if (state.timeLeftMs <= 0) {
+              state.end("draw");
+            }
+          }
+
+          updatePlayer(state, dt, dtMs);
+
+          trySpawnEnemy(state);
+          for (const e of state.enemies) updateEnemyAI(state, e, dt, dtMs);
+
+          updateBullets(state, dt, dtMs);
+          updatePowerUps(state, dt, dtMs);
+          syncUI();
+
+          if (t - state.lastAutoSaveMs > 5000) {
+            state.lastAutoSaveMs = t;
+            try { saveState(state); } catch {}
+          }
+        }
+
+        drawTiles(state.map, "solid");
+        drawBase(state.base);
+        for (const p of state.powerUps) if (p.alive) drawPowerUp(p);
+        for (const e of state.enemies) drawTank(e);
+        drawTank(state.player);
+        for (const b of state.bullets) if (b.alive) drawBullet(b);
+        drawParticles(state.particles, dtMs);
+        drawTiles(state.map, "grass");
+        drawHUD(state);
+
+        requestAnimationFrame(loop);
+      }
+      requestAnimationFrame(loop);
+
+      function togglePause() {
+        if (state.mode === "playing") {
+          state.mode = "pause";
+          setOverlay("pause");
+        } else if (state.mode === "pause") {
+          state.mode = "playing";
+          hideOverlay();
+        }
+      }
+
+      window.addEventListener("keydown", (e) => {
+        if (e.code === "KeyR") restartGame();
+        if (e.code === "KeyP") togglePause();
+        if (e.code === "Escape") {
+          if (state.mode === "playing") togglePause();
+        }
+      });
+
+      optDifficulty.addEventListener("change", () => syncUI());
+      optTimeLimit.addEventListener("change", () => syncUI());
+
+      btnContinue.style.display = hasSave() ? "inline-block" : "none";
+      syncUI();
+    </script>
+  </body>
+</html>
+

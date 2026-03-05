@@ -9,8 +9,8 @@ export const products: Product[] = [
     price: 299,
     currency: 'CNY',
     images: [
-      'https://images.unsplash.com/photo-1520975958221-2bcd02bf563e?auto=format&fit=crop&w=1400&q=80',
-      'https://images.unsplash.com/photo-1520975958221-2bcd02bf563e?auto=format&fit=crop&w=900&q=80',
+      '/images/product-b.svg',
+      '/images/product-a.svg',
     ],
     sizes: ['XS', 'S', 'M', 'L'],
     color: 'Black',
@@ -25,8 +25,8 @@ export const products: Product[] = [
     price: 199,
     currency: 'CNY',
     images: [
-      'https://images.unsplash.com/photo-1520975695911-63fd9c55f2b7?auto=format&fit=crop&w=1400&q=80',
-      'https://images.unsplash.com/photo-1520975695911-63fd9c55f2b7?auto=format&fit=crop&w=900&q=80',
+      '/images/product-e.svg',
+      '/images/product-c.svg',
     ],
     sizes: ['XS', 'S', 'M', 'L'],
     color: 'White',
@@ -41,8 +41,8 @@ export const products: Product[] = [
     price: 459,
     currency: 'CNY',
     images: [
-      'https://images.unsplash.com/photo-1520975869010-4b96f0f8af37?auto=format&fit=crop&w=1400&q=80',
-      'https://images.unsplash.com/photo-1520975869010-4b96f0f8af37?auto=format&fit=crop&w=900&q=80',
+      '/images/product-f.svg',
+      '/images/product-b.svg',
     ],
     sizes: ['XS', 'S', 'M', 'L'],
     color: 'Navy',
@@ -57,8 +57,8 @@ export const products: Product[] = [
     price: 279,
     currency: 'CNY',
     images: [
-      'https://images.unsplash.com/photo-1520975894604-9a8b7c1b2e9b?auto=format&fit=crop&w=1400&q=80',
-      'https://images.unsplash.com/photo-1520975894604-9a8b7c1b2e9b?auto=format&fit=crop&w=900&q=80',
+      '/images/product-d.svg',
+      '/images/product-a.svg',
     ],
     sizes: ['XS', 'S', 'M', 'L'],
     color: 'Beige',
@@ -73,8 +73,8 @@ export const products: Product[] = [
     price: 169,
     currency: 'CNY',
     images: [
-      'https://images.unsplash.com/photo-1520975969924-6f0d7fb6f12d?auto=format&fit=crop&w=1400&q=80',
-      'https://images.unsplash.com/photo-1520975969924-6f0d7fb6f12d?auto=format&fit=crop&w=900&q=80',
+      '/images/product-c.svg',
+      '/images/product-e.svg',
     ],
     sizes: ['XS', 'S', 'M', 'L'],
     color: 'Champagne',
@@ -89,8 +89,8 @@ export const products: Product[] = [
     price: 239,
     currency: 'CNY',
     images: [
-      'https://images.unsplash.com/photo-1520975774470-5d0b4e3ab5d5?auto=format&fit=crop&w=1400&q=80',
-      'https://images.unsplash.com/photo-1520975774470-5d0b4e3ab5d5?auto=format&fit=crop&w=900&q=80',
+      '/images/product-a.svg',
+      '/images/product-d.svg',
     ],
     sizes: ['XS', 'S', 'M', 'L'],
     color: 'Stone',
@@ -105,8 +105,8 @@ export const products: Product[] = [
     price: 159,
     currency: 'CNY',
     images: [
-      'https://images.unsplash.com/photo-1520975667647-7f0b3c409b86?auto=format&fit=crop&w=1400&q=80',
-      'https://images.unsplash.com/photo-1520975667647-7f0b3c409b86?auto=format&fit=crop&w=900&q=80',
+      '/images/product-e.svg',
+      '/images/product-b.svg',
     ],
     sizes: ['XS', 'S', 'M', 'L'],
     color: 'Grey',
@@ -121,8 +121,8 @@ export const products: Product[] = [
     price: 259,
     currency: 'CNY',
     images: [
-      'https://images.unsplash.com/photo-1520975906595-8fd88c3d3f7f?auto=format&fit=crop&w=1400&q=80',
-      'https://images.unsplash.com/photo-1520975906595-8fd88c3d3f7f?auto=format&fit=crop&w=900&q=80',
+      '/images/product-d.svg',
+      '/images/product-f.svg',
     ],
     sizes: ['XS', 'S', 'M', 'L'],
     color: 'Indigo',
@@ -134,4 +134,3 @@ export const products: Product[] = [
 export function getProductById(id: string) {
   return products.find((p) => p.id === id) ?? null
 }
-

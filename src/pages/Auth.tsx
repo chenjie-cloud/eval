@@ -142,7 +142,7 @@ export default function Auth() {
         <div className="overflow-hidden rounded-[calc(var(--radius)+10px)] border border-[var(--line)] bg-black/5 shadow-[var(--shadow)]">
           <div className="relative aspect-[16/10] sm:aspect-[16/9]">
             <img
-              src="https://images.unsplash.com/photo-1520975969924-6f0d7fb6f12d?auto=format&fit=crop&w=1600&q=80"
+              src="/images/editorial.svg"
               alt="Editorial"
               className="absolute inset-0 h-full w-full object-cover"
               loading="eager"

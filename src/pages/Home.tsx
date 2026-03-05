@@ -13,22 +13,19 @@ export default function Home() {
       <Carousel
         slides={[
           {
-            image:
-              'https://images.unsplash.com/photo-1520975958221-2bcd02bf563e?auto=format&fit=crop&w=1800&q=80',
+            image: '/images/hero-1.svg',
             title: 'Black / Beige / Navy',
             description: '一套更克制的衣橱语法：干净线条、大面积留白与细节质感。',
             align: 'left',
           },
           {
-            image:
-              'https://images.unsplash.com/photo-1520975869010-4b96f0f8af37?auto=format&fit=crop&w=1800&q=80',
+            image: '/images/hero-2.svg',
             title: 'Tailored, not loud',
             description: '廓形与比例把握得刚好，让每一次出门都更轻松。',
             align: 'left',
           },
           {
-            image:
-              'https://images.unsplash.com/photo-1520975894604-9a8b7c1b2e9b?auto=format&fit=crop&w=1800&q=80',
+            image: '/images/hero-3.svg',
             title: 'Everyday polish',
             description: '通勤、周末、旅行，都能在极简中保持松弛。',
             align: 'left',

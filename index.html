@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>业务数据看板</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Outfit:wght@500;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #101828;
+      --subtle: #667085;
+      --line: #e4e7ec;
+      --primary: #2f6bff;
+      --accent: #16b364;
+      --shadow: 0 10px 32px rgba(16, 24, 40, 0.08);
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Noto Sans SC", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 100% 0%, rgba(47, 107, 255, 0.12), transparent 28%),
+        radial-gradient(circle at 0% 100%, rgba(22, 179, 100, 0.08), transparent 24%),
+        var(--bg);
+    }
+
+    .dashboard {
+      max-width: 1280px;
+      margin: 36px auto;
+      padding: 0 20px 24px;
+    }
+
+    .title {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 20px;
+    }
+
+    .title h1 {
+      margin: 0;
+      font-family: "Outfit", sans-serif;
+      font-size: 30px;
+      letter-spacing: 0.3px;
+    }
+
+    .title span {
+      color: var(--subtle);
+      font-size: 14px;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .kpi-card {
+      padding: 18px 20px;
+    }
+
+    .kpi-label {
+      color: var(--subtle);
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .kpi-value {
+      font-family: "Outfit", sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .kpi-trend {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .up {
+      color: var(--accent);
+    }
+
+    .down {
+      color: #f04438;
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+    }
+
+    .chart-card {
+      padding: 14px 14px 8px;
+    }
+
+    .chart-card h3 {
+      margin: 0;
+      padding: 6px 10px 10px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .chart {
+      width: 100%;
+      height: 320px;
+    }
+
+    .heatmap-wrap {
+      margin-top: 16px;
+    }
+
+    .heatmap-wrap .chart {
+      height: 340px;
+    }
+
+    @media (max-width: 1024px) {
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .dashboard {
+        margin-top: 20px;
+      }
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+      .title {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <div class="title">
+      <h1>业务数据看板</h1>
+      <span>更新于 2026-03-06 09:30</span>
+    </div>
+
+    <section class="kpi-grid">
+      <article class="card kpi-card">
+        <div class="kpi-label">用户数</div>
+        <div class="kpi-value">128,530</div>
+        <div class="kpi-trend up">较昨日 +3.8%</div>
+      </article>
+      <article class="card kpi-card">
+        <div class="kpi-label">转化率</div>
+        <div class="kpi-value">6.42%</div>
+        <div class="kpi-trend up">近7日 +0.54%</div>
+      </article>
+      <article class="card kpi-card">
+        <div class="kpi-label">日均收入</div>
+        <div class="kpi-value">¥ 286,700</div>
+        <div class="kpi-trend down">较上周 -1.1%</div>
+      </article>
+    </section>
+
+    <section class="charts-grid">
+      <article class="card chart-card">
+        <h3>销售趋势折线图（近30天）</h3>
+        <div id="salesTrend" class="chart"></div>
+      </article>
+      <article class="card chart-card">
+        <h3>地区分布饼图（不同省份）</h3>
+        <div id="regionPie" class="chart"></div>
+      </article>
+    </section>
+
+    <section class="card chart-card heatmap-wrap">
+      <h3>用户活跃度热力图（日-小时分布）</h3>
+      <div id="activeHeatmap" class="chart"></div>
+    </section>
+  </div>
+
+  <script>
+    const plotConfig = { responsive: true, displayModeBar: false };
+
+    const days = Array.from({ length: 30 }, (_, i) => {
+      const d = new Date();
+      d.setDate(d.getDate() - (29 - i));
+      return `${d.getMonth() + 1}/${d.getDate()}`;
+    });
+
+    const sales = [
+      178, 190, 185, 210, 225, 214, 238, 245, 262, 258,
+      274, 280, 267, 289, 301, 315, 298, 322, 334, 347,
+      361, 355, 370, 388, 402, 396, 412, 438, 426, 452
+    ];
+
+    Plotly.newPlot("salesTrend", [
+      {
+        x: days,
+        y: sales,
+        type: "scatter",
+        mode: "lines+markers",
+        line: { color: "#2F6BFF", width: 3, shape: "spline", smoothing: 0.6 },
+        marker: { size: 6, color: "#2F6BFF", line: { color: "#ffffff", width: 1.5 } },
+        hovertemplate: "日期 %{x}<br>销售额 %{y} 万元<extra></extra>"
+      }
+    ], {
+      margin: { l: 52, r: 18, t: 8, b: 42 },
+      paper_bgcolor: "transparent",
+      plot_bgcolor: "transparent",
+      xaxis: {
+        tickfont: { color: "#667085", size: 11 },
+        gridcolor: "#EEF2F6",
+        tickangle: -30
+      },
+      yaxis: {
+        title: "单位：万元",
+        titlefont: { size: 12, color: "#98A2B3" },
+        tickfont: { color: "#667085", size: 11 },
+        gridcolor: "#E9EEF5",
+        zeroline: false
+      }
+    }, plotConfig);
+
+    Plotly.newPlot("regionPie", [
+      {
+        type: "pie",
+        labels: ["广东", "浙江", "江苏", "山东", "四川", "湖北", "北京"],
+        values: [24, 18, 14, 12, 11, 9, 12],
+        textinfo: "label+percent",
+        insidetextorientation: "radial",
+        marker: {
+          colors: ["#2F6BFF", "#4B83FF", "#6B9AFF", "#8BB1FF", "#A4C2FF", "#C0D4FF", "#D9E5FF"]
+        },
+        hole: 0.45,
+        hovertemplate: "%{label}<br>占比 %{percent}<extra></extra>"
+      }
+    ], {
+      margin: { l: 12, r: 12, t: 12, b: 12 },
+      paper_bgcolor: "transparent",
+      showlegend: false
+    }, plotConfig);
+
+    const weekDays = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
+    const hours = Array.from({ length: 24 }, (_, i) => `${i}:00`);
+    const heatmapData = weekDays.map((_, dayIndex) =>
+      hours.map((_, hour) => {
+        const workHourBoost = hour >= 9 && hour <= 22 ? 40 : 10;
+        const dayBoost = dayIndex < 5 ? 25 : 5;
+        const peakBoost = [12, 13, 19, 20, 21].includes(hour) ? 30 : 0;
+        return Math.floor(20 + workHourBoost + dayBoost + peakBoost + Math.random() * 20);
+      })
+    );
+
+    Plotly.newPlot("activeHeatmap", [
+      {
+        z: heatmapData,
+        x: hours,
+        y: weekDays,
+        type: "heatmap",
+        colorscale: [
+          [0, "#EAF0FF"],
+          [0.35, "#A4C2FF"],
+          [0.65, "#4B83FF"],
+          [1, "#1F53D7"]
+        ],
+        hovertemplate: "%{y} %{x}<br>活跃用户 %{z}<extra></extra>"
+      }
+    ], {
+      margin: { l: 62, r: 18, t: 8, b: 42 },
+      paper_bgcolor: "transparent",
+      plot_bgcolor: "transparent",
+      xaxis: {
+        tickmode: "array",
+        tickvals: ["0:00", "4:00", "8:00", "12:00", "16:00", "20:00"],
+        tickfont: { color: "#667085", size: 11 },
+        gridcolor: "#EEF2F6"
+      },
+      yaxis: {
+        tickfont: { color: "#667085", size: 11 },
+        autorange: "reversed"
+      }
+    }, plotConfig);
+  </script>
+</body>
+</html>

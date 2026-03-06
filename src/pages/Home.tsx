@@ -5,7 +5,7 @@ import RegionPiePlot from "@/components/charts/RegionPiePlot";
 import SalesTrendPlot from "@/components/charts/SalesTrendPlot";
 import { useTheme } from "@/hooks/useTheme";
 import { cn } from "@/lib/utils";
-import { Banknote, Moon, RefreshCcw, Sun, TrendingUp, Users } from "lucide-react";
+import { Banknote, ChevronDown, Moon, RefreshCcw, Sun, TrendingUp, Users, X } from "lucide-react";
 import { useMemo, useState, type ReactNode } from "react";
 import { createDashboardMock } from "@/utils/dashboardMock";
 
@@ -34,10 +34,45 @@ function IconButton({
   );
 }
 
+function Segmented({
+  value,
+  onChange,
+  options,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  options: Array<{ value: string; label: string }>;
+}) {
+  return (
+    <div className="inline-flex overflow-hidden rounded-xl border border-[rgba(240,248,255,0.12)] bg-[rgba(255,255,255,0.03)] p-1">
+      {options.map(opt => {
+        const active = opt.value === value;
+        return (
+          <button
+            key={opt.value}
+            type="button"
+            onClick={() => onChange(opt.value)}
+            className={cn(
+              "rounded-lg px-3 py-2 text-xs font-semibold transition-colors",
+              active
+                ? "bg-[rgba(163,255,43,0.14)] text-[var(--text-0)]"
+                : "text-[var(--text-2)] hover:text-[var(--text-1)]",
+            )}
+          >
+            {opt.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function Home() {
   const { isDark, toggleTheme } = useTheme();
   const [seed, setSeed] = useState(1);
   const mock = useMemo(() => createDashboardMock(seed), [seed]);
+  const [salesMetric, setSalesMetric] = useState<"revenue" | "orders">("revenue");
+  const [activeProvince, setActiveProvince] = useState<string | null>(null);
 
   const snapshotTime = useMemo(() => {
     const now = new Date();
@@ -102,12 +137,102 @@ export default function Home() {
       </section>
 
       <section className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-12">
-        <Card title="销售趋势" subtitle="近 30 天（示例数据）" className="lg:col-span-7">
-          <SalesTrendPlot days={mock.sales.days} revenue={mock.sales.revenue} isDark={isDark} />
+        <Card
+          title="销售趋势"
+          subtitle={activeProvince ? `近 30 天 · ${activeProvince}` : "近 30 天（示例数据）"}
+          className="lg:col-span-7"
+          actions={
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <select
+                  aria-label="选择省份"
+                  value={activeProvince ?? ""}
+                  onChange={e => setActiveProvince(e.target.value ? e.target.value : null)}
+                  className="appearance-none rounded-xl border border-[rgba(240,248,255,0.12)] bg-[rgba(255,255,255,0.03)] px-3 py-2 pr-8 text-xs font-semibold text-[var(--text-1)] transition-colors hover:bg-[rgba(255,255,255,0.05)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent-1)]"
+                >
+                  <option value="">全部省份</option>
+                  {mock.regions.provinces.map(p => (
+                    <option key={p} value={p}>
+                      {p}
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[var(--text-2)]">
+                  <ChevronDown className="h-4 w-4" />
+                </div>
+              </div>
+
+              {activeProvince && (
+                <button
+                  type="button"
+                  aria-label="清除省份筛选"
+                  onClick={() => setActiveProvince(null)}
+                  className="inline-flex items-center gap-2 rounded-xl border border-[rgba(240,248,255,0.12)] bg-[rgba(255,255,255,0.04)] px-3 py-2 text-xs font-semibold text-[var(--text-1)] transition-colors hover:bg-[rgba(255,255,255,0.06)]"
+                >
+                  {activeProvince}
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+              <Segmented
+                value={salesMetric}
+                onChange={v => setSalesMetric(v as "revenue" | "orders")}
+                options={[
+                  { value: "revenue", label: "收入" },
+                  { value: "orders", label: "订单" },
+                ]}
+              />
+            </div>
+          }
+        >
+          <SalesTrendPlot
+            days={mock.sales.days}
+            revenue={activeProvince ? mock.sales.byProvince[activeProvince]?.revenue ?? mock.sales.revenue : mock.sales.revenue}
+            orders={activeProvince ? mock.sales.byProvince[activeProvince]?.orders ?? mock.sales.orders : mock.sales.orders}
+            metric={salesMetric}
+            isDark={isDark}
+            seriesLabel={activeProvince ?? undefined}
+          />
         </Card>
 
-        <Card title="地区分布" subtitle="不同省份（示例数据）" className="lg:col-span-5">
-          <RegionPiePlot provinces={mock.regions.provinces} values={mock.regions.values} isDark={isDark} />
+        <Card title="地区分布" subtitle="不同省份（点击扇区联动）" className="lg:col-span-5">
+          <div className="grid gap-4">
+            <RegionPiePlot
+              provinces={mock.regions.provinces}
+              values={mock.regions.values}
+              isDark={isDark}
+              selectedProvince={activeProvince ?? undefined}
+              onSelectProvince={p => setActiveProvince(prev => (prev === p ? null : p))}
+              height={236}
+            />
+
+            <div className="grid grid-cols-2 gap-2">
+              {mock.regions.provinces
+                .map((p, i) => ({ province: p, value: mock.regions.values[i] ?? 0 }))
+                .sort((a, b) => b.value - a.value)
+                .slice(0, 6)
+                .map(item => {
+                  const active = item.province === activeProvince;
+                  return (
+                    <button
+                      key={item.province}
+                      type="button"
+                      onClick={() => setActiveProvince(prev => (prev === item.province ? null : item.province))}
+                      className={cn(
+                        "flex items-center justify-between gap-3 rounded-xl border px-3 py-2 text-xs font-semibold transition-colors",
+                        active
+                          ? "border-[rgba(163,255,43,0.26)] bg-[rgba(163,255,43,0.12)] text-[var(--text-0)]"
+                          : "border-[rgba(240,248,255,0.10)] bg-[rgba(255,255,255,0.03)] text-[var(--text-1)] hover:bg-[rgba(255,255,255,0.05)]",
+                      )}
+                    >
+                      <span className="truncate">{item.province}</span>
+                      <span className={cn("tabular-nums", active ? "text-[var(--text-0)]" : "text-[var(--text-2)]")}>
+                        {item.value.toFixed(1)}%
+                      </span>
+                    </button>
+                  );
+                })}
+            </div>
+          </div>
         </Card>
 
         <Card title="用户活跃度" subtitle="日-小时热力图（示例数据）" className="lg:col-span-12">

@@ -12,6 +12,8 @@ type Kpis = {
 type SalesSeries = {
   days: string[];
   revenue: number[];
+  orders: number[];
+  byProvince: Record<string, { revenue: number[]; orders: number[] }>;
 };
 
 type RegionShare = {
@@ -49,10 +51,12 @@ export function createDashboardMock(seed: number) {
   const today = new Date();
   const days: string[] = [];
   const revenue: number[] = [];
+  const orders: number[] = [];
 
   const base = 920_000 + rnd() * 240_000;
   const drift = (rnd() * 2 - 1) * 9_500;
   const weekly = 0.14 + rnd() * 0.08;
+  const aov = 260 + rnd() * 90;
 
   for (let i = 29; i >= 0; i -= 1) {
     const d = new Date(today);
@@ -65,13 +69,38 @@ export function createDashboardMock(seed: number) {
     const season = 1 + 0.06 * Math.sin(((29 - i) / 6.0) * Math.PI);
     const noise = (rnd() * 2 - 1) * 65_000;
     const v = clamp(base + drift * (29 - i) + noise, 420_000, 1_900_000) * season * weekendBoost;
-    revenue.push(Math.round(v));
+    const rev = Math.round(v);
+    revenue.push(rev);
+    const orderNoise = 1 + (rnd() * 2 - 1) * 0.12;
+    orders.push(Math.max(120, Math.round((rev / aov) * orderNoise)));
   }
 
   const provinces = ["广东", "江苏", "浙江", "山东", "河南", "四川", "湖北", "福建", "北京", "上海"];
   const raw = provinces.map(() => 0.6 + rnd() * 1.4);
   const total = raw.reduce((a, b) => a + b, 0);
-  const values = raw.map(v => Math.round((v / total) * 1000) / 10);
+  const baseShare = raw.map(v => v / total);
+
+  const byProvince: Record<string, { revenue: number[]; orders: number[] }> = Object.fromEntries(
+    provinces.map(p => [p, { revenue: [], orders: [] }]),
+  );
+
+  for (let di = 0; di < days.length; di += 1) {
+    const w = baseShare.map(s => s * (0.9 + rnd() * 0.22));
+    const wSum = w.reduce((a, b) => a + b, 0);
+    const shares = w.map(v => v / wSum);
+    for (let pi = 0; pi < provinces.length; pi += 1) {
+      const p = provinces[pi]!;
+      const rev = Math.round(revenue[di]! * shares[pi]!);
+      const pAov = aov * (0.88 + rnd() * 0.26);
+      const ord = Math.max(30, Math.round((rev / pAov) * (0.92 + rnd() * 0.2)));
+      byProvince[p]!.revenue.push(rev);
+      byProvince[p]!.orders.push(ord);
+    }
+  }
+
+  const provinceTotals = provinces.map(p => byProvince[p]!.revenue.reduce((a, b) => a + b, 0));
+  const provinceTotalSum = provinceTotals.reduce((a, b) => a + b, 0);
+  const values = provinceTotals.map(v => Math.round((v / provinceTotalSum) * 1000) / 10);
 
   const weekdays = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
   const hours = Array.from({ length: 24 }, (_, i) => i);
@@ -108,7 +137,7 @@ export function createDashboardMock(seed: number) {
     revenueDelta,
   };
 
-  const sales: SalesSeries = { days, revenue };
+  const sales: SalesSeries = { days, revenue, orders, byProvince };
   const regions: RegionShare = { provinces, values };
   const activity: ActivityHeatmap = { weekdays, hours, z };
 
@@ -127,4 +156,3 @@ export function createDashboardMock(seed: number) {
     },
   };
 }
-

@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-cyber-pink: #ff00ff;
+    --color-cyber-blue: #00ffff;
+    --color-cyber-yellow: #ffff00;
+    --color-cyber-black: #050505;
+    --color-cyber-gray: #1a1a1a;
+    --color-cyber-green: #00ff00;
+    --color-cyber-purple: #bf00ff;
+  }
+  
+  body {
+    background-color: var(--color-cyber-black);
+    color: var(--color-cyber-blue);
+    font-family: 'Courier New', Courier, monospace;
+    overflow-x: hidden;
+  }
+}
+
+@layer utilities {
+  .text-shadow-neon-pink {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px var(--color-cyber-pink), 0 0 40px var(--color-cyber-pink), 0 0 80px var(--color-cyber-pink);
+  }
+  
+  .text-shadow-neon-blue {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px var(--color-cyber-blue), 0 0 40px var(--color-cyber-blue), 0 0 80px var(--color-cyber-blue);
+  }
+
+  .box-shadow-neon-pink {
+    box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px var(--color-cyber-pink), 0 0 40px var(--color-cyber-pink);
+  }
+
+  .box-shadow-neon-blue {
+    box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px var(--color-cyber-blue), 0 0 40px var(--color-cyber-blue);
+  }
+}

@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+@theme {
+  --animate-gradient: gradient 15s ease infinite;
+
+  @keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+}
+
+@layer base {
+  body {
+    @apply m-0 text-white min-h-screen font-sans antialiased;
+    background: linear-gradient(-45deg, #0f172a, #1e1b4b, #312e81, #0f172a);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/10 backdrop-blur-md border border-white/20 shadow-xl;
+  }
+}

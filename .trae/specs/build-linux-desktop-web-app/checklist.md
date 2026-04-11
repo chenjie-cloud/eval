@@ -1,0 +1,12 @@
+- [x] React project initialized with Vite and Tailwind CSS.
+- [x] Global state (Zustand) is configured for windows and file system.
+- [x] Desktop layout renders full screen with a wallpaper.
+- [x] Taskbar displays Start Menu, active windows, and current time.
+- [x] Windows can be opened, closed, minimized, maximized, dragged, and resized.
+- [x] Clicking a window brings it to the front (focus management).
+- [x] Terminal app can execute basic mock commands (`ls`, `echo`, `clear`).
+- [x] File Explorer can navigate through mock directories.
+- [x] Text Editor can open and save mock text files.
+- [x] Start Menu lists available applications and can launch them.
+- [x] Double-clicking a file in File Explorer opens it in the Text Editor.
+- [x] Text Editor supports creating new mock text files.

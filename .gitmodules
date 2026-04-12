@@ -1,0 +1,12 @@
+[submodule "codex"]
+	path = codex
+	url = https://github.com/openai/codex.git
+[submodule "gemini-cli"]
+	path = gemini-cli
+	url = https://github.com/google-gemini/gemini-cli.git
+[submodule "claude-code"]
+	path = claude-code
+	url = https://github.com/anthropics/claude-code.git
+[submodule "openclaw"]
+	path = openclaw
+	url = https://github.com/openclaw/openclaw.git

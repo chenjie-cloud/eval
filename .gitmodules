@@ -1,0 +1,6 @@
+[submodule "codex"]
+	path = codex
+	url = https://github.com/openai/codex.git
+[submodule "gemini-cli"]
+	path = gemini-cli
+	url = https://github.com/google-gemini/gemini-cli.git

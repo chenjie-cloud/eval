@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Spline+Sans:wght@400;500;600&display=swap');
+
+:root {
+  --paper: #fbf6ea;
+  --ink: #17141f;
+  --muted: rgba(23, 20, 31, 0.62);
+  --hairline: rgba(23, 20, 31, 0.14);
+  --panel: rgba(255, 255, 255, 0.52);
+  --shadow: 0 18px 44px rgba(0, 0, 0, 0.12);
+  --accent: #ff3d8a;
+  --accent-2: #2ce6a6;
+  --danger: #ff3954;
+  --radius: 18px;
+
+  --sans: 'Spline Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI';
+  --display: 'Fraunces', ui-serif, Georgia, serif;
+
+  color: var(--ink);
+  background: var(--paper);
+  font: 16px/1.45 var(--sans);
+  font-synthesis: none;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background:
+    radial-gradient(900px 600px at 12% 10%, rgba(255, 61, 138, 0.14), transparent 60%),
+    radial-gradient(900px 600px at 88% 18%, rgba(44, 230, 166, 0.12), transparent 58%),
+    radial-gradient(800px 520px at 50% 92%, rgba(23, 20, 31, 0.06), transparent 62%),
+    repeating-linear-gradient(0deg, rgba(23, 20, 31, 0.035), rgba(23, 20, 31, 0.035) 1px, transparent 1px, transparent 22px),
+    var(--paper);
+}
+
+#root {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 48px 18px 68px;
+  box-sizing: border-box;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+* {
+  box-sizing: border-box;
+}

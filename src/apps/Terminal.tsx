@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useFileSystemStore } from '../store/useFileSystemStore';
+import { useFileSystemStore, normalizePath } from '../store/useFileSystemStore';
 
 export const Terminal = () => {
   const [history, setHistory] = useState<{ command: string; output: string | React.ReactNode }[]>([]);
@@ -14,16 +14,28 @@ export const Terminal = () => {
     const trimmed = cmd.trim();
     if (!trimmed) return;
 
-    const parts = trimmed.split(' ');
+    const parseCommand = (commandStr: string): string[] => {
+      const regex = /[^\s"']+|"([^"]*)"|'([^']*)'/g;
+      const result: string[] = [];
+      let match;
+      while ((match = regex.exec(commandStr)) !== null) {
+        result.push(match[1] ?? match[2] ?? match[0]);
+      }
+      return result;
+    };
+
+    const parts = parseCommand(trimmed);
     const command = parts[0];
     const args = parts.slice(1);
 
     let output: string | React.ReactNode = '';
 
     const resolvePath = (p: string) => {
-      if (p.startsWith('/')) return p;
-      if (cwd === '/') return `/${p}`;
-      return `${cwd}/${p}`;
+      let absolutePath = p;
+      if (!p.startsWith('/')) {
+        absolutePath = cwd === '/' ? `/${p}` : `${cwd}/${p}`;
+      }
+      return normalizePath(absolutePath);
     };
 
     try {
@@ -47,16 +59,12 @@ export const Terminal = () => {
           const target = args[0];
           if (!target || target === '~') {
             setCwd('/');
-          } else if (target === '..') {
-            if (cwd !== '/') {
-              const parts = cwd.split('/').filter(Boolean);
-              parts.pop();
-              setCwd(parts.length ? `/${parts.join('/')}` : '/');
-            }
           } else {
             const targetPath = resolvePath(target);
             const node = fs.nodes[targetPath];
-            if (!node) {
+            if (targetPath === '/') {
+              setCwd('/');
+            } else if (!node) {
               output = `cd: ${target}: No such file or directory`;
             } else if (node.type !== 'directory') {
               output = `cd: ${target}: Not a directory`;
@@ -127,14 +135,13 @@ export const Terminal = () => {
             const file = args[redirIndex + 1];
             if (file) {
               const targetPath = resolvePath(file);
-              text = text.replace(/^["'](.*)["']$/, '$1');
               fs.write(targetPath, text);
               output = '';
             } else {
               output = 'bash: syntax error near unexpected token `newline`';
             }
           } else {
-            output = text.replace(/^["'](.*)["']$/, '$1');
+            output = text;
           }
           break;
         }

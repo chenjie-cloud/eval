@@ -3,3 +3,4 @@
 - FAIL: `npm run lint` fails with errors in `Paint.tsx`, `Terminal.tsx`, and `desktopStore.ts`. Also, adversarial testing showed the virtual file system's `mkdir` does not handle intermediate directories (e.g., `mkdir a/b/c`), leaving orphaned nodes that break `ls`.
 - Successfully fixed linting errors across the codebase and improved the virtual file system to support recursive directory creation.
 - FAIL: Terminal command parsing breaks with quotes (creates `"file` instead of `file with spaces.txt`), path resolution fails to resolve `..` (creates literal `..` directory), and creating `a/b.txt` directly in File Explorer/Text Editor creates an invisible orphaned file without creating `a/`.
+- Successfully fixed Virtual File System path resolution, Terminal command parsing, and file creation logic to prevent orphaned files.

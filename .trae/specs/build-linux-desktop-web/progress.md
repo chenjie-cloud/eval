@@ -1,2 +1,3 @@
 - Created specification for the Linux-style Desktop Web Environment with 12 apps
 - Successfully implemented the Linux-style Desktop Web App, fully integrating 12 applications with Zustand state management, Framer Motion window controls, and a persistent virtual file system.
+- FAIL: `npm run lint` fails with errors in `Paint.tsx`, `Terminal.tsx`, and `desktopStore.ts`. Also, adversarial testing showed the virtual file system's `mkdir` does not handle intermediate directories (e.g., `mkdir a/b/c`), leaving orphaned nodes that break `ls`.

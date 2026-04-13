@@ -41,3 +41,8 @@
 - [Task 6] depends on [Task 4]
 - [Task 7] depends on [Task 4]
 - [Task 8] depends on [Task 3, Task 5, Task 6, Task 7]
+
+- [ ] Task 9: Fix Lint Errors and Virtual File System Bugs
+  - [ ] SubTask 9.1: Fix `saveHistoryState` accessed before declaration in `src/apps/Paint.tsx`
+  - [ ] SubTask 9.2: Fix `any` types in `src/apps/Terminal.tsx` and `src/store/desktopStore.ts`
+  - [ ] SubTask 9.3: Fix `mkdir` in `src/store/useFileSystemStore.ts` to properly handle or error on nested paths (e.g. `mkdir a/b/c`).

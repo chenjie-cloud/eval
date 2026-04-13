@@ -19,3 +19,4 @@
 - [x] All 12 apps can be launched from the Taskbar/App Menu and function simultaneously
 - [x] `npm run lint` passes without any errors.
 - [x] Virtual file system properly handles nested directory creation without creating orphaned nodes (tested with `mkdir a/b/c` and `ls`).
+- [ ] Virtual file system properly resolves `..` paths, handles quoted commands like `echo "hello" > "a.txt"`, and prevents orphaned files when creating paths with slashes.

@@ -1,2 +1,3 @@
-const { useFileSystemStore } = require('./src/store/useFileSystemStore.ts');
-console.log("We need to run this as TS. Let's use ts-node or just write a small test.ts and use npx tsx test.ts");
+import fs from 'fs';
+const text = fs.readFileSync('src/apps/Terminal.tsx', 'utf-8');
+console.log(text.includes('path.normalize') ? 'Handles ..' : 'Does not handle ..');

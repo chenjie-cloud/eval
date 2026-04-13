@@ -46,3 +46,8 @@
   - [x] SubTask 9.1: Fix `saveHistoryState` accessed before declaration in `src/apps/Paint.tsx`
   - [x] SubTask 9.2: Fix `any` types in `src/apps/Terminal.tsx` and `src/store/desktopStore.ts`
   - [x] SubTask 9.3: Fix `mkdir` in `src/store/useFileSystemStore.ts` to properly handle or error on nested paths (e.g. `mkdir a/b/c`).
+
+- [ ] Task 10: Fix Virtual File System Path and Command Parsing Bugs
+  - [ ] SubTask 10.1: Fix `mkdir` and path resolution to handle `..` correctly so `mkdir a/../b` creates `b` in the current directory, not `..` inside `a`.
+  - [ ] SubTask 10.2: Fix `Terminal` command parsing to handle quoted strings (e.g. `echo "hello" > "file with spaces.txt"`).
+  - [ ] SubTask 10.3: Fix `FileExplorer` and `TextEditor` file creation so that creating a file like `a/b.txt` either creates the parent directories or rejects the invalid filename, preventing orphaned nodes.

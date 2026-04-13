@@ -7,7 +7,7 @@ export interface AppConfig {
   id: string;
   name: string;
   icon: LucideIcon;
-  component?: React.ComponentType<any>;
+  component?: React.ComponentType;
 }
 
 export interface DesktopState {

@@ -81,24 +81,41 @@ export const useFileSystemStore = create<FileSystemStore>()(
       }),
 
       mkdir: (path: string) => set((state) => {
-        const name = path.split('/').pop() || '';
+        if (state.nodes[path] && state.nodes[path].type === 'directory') {
+          return state;
+        }
+
+        const isAbsolute = path.startsWith('/');
+        const parts = path.split('/').filter(Boolean);
+        const newNodes = { ...state.nodes };
         const now = Date.now();
         
-        // Prevent overwriting existing nodes
-        if (state.nodes[path]) return state;
+        let currentPath = isAbsolute ? '/' : '';
+        let changed = false;
 
-        return {
-          nodes: {
-            ...state.nodes,
-            [path]: {
-              path,
-              name,
+        for (let i = 0; i < parts.length; i++) {
+          const part = parts[i];
+          if (currentPath === '/' || currentPath === '') {
+             currentPath = currentPath + part;
+          } else {
+             currentPath = currentPath + '/' + part;
+          }
+
+          if (!newNodes[currentPath]) {
+            newNodes[currentPath] = {
+              path: currentPath,
+              name: part,
               type: 'directory',
               createdAt: now,
               updatedAt: now,
-            },
-          },
-        };
+            };
+            changed = true;
+          } else if (newNodes[currentPath].type !== 'directory') {
+            throw new Error(`mkdir: cannot create directory '${path}': Not a directory`);
+          }
+        }
+
+        return changed ? { nodes: newNodes } : state;
       }),
 
       list: (path: string) => {

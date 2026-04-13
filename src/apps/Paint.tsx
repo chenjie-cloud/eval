@@ -19,6 +19,19 @@ export default function Paint() {
   const [history, setHistory] = useState<ImageData[]>([]);
   const [historyStep, setHistoryStep] = useState(-1);
 
+  const saveHistoryState = (canvas: HTMLCanvasElement) => {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    
+    setHistory(prev => {
+      const newHistory = prev.slice(0, historyStep + 1);
+      newHistory.push(imageData);
+      return newHistory;
+    });
+    setHistoryStep(prev => prev + 1);
+  };
+
   // Initialize canvas size
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -35,19 +48,6 @@ export default function Paint() {
       saveHistoryState(canvas);
     }
   }, []);
-
-  const saveHistoryState = (canvas: HTMLCanvasElement) => {
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    
-    setHistory(prev => {
-      const newHistory = prev.slice(0, historyStep + 1);
-      newHistory.push(imageData);
-      return newHistory;
-    });
-    setHistoryStep(prev => prev + 1);
-  };
 
   const getCoordinates = (e: ReactMouseEvent<HTMLCanvasElement> | MouseEvent) => {
     const canvas = canvasRef.current;

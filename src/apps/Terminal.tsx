@@ -141,8 +141,12 @@ export const Terminal = () => {
         default:
           output = `command not found: ${command}`;
       }
-    } catch (e: any) {
-      output = e.message;
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        output = e.message;
+      } else {
+        output = String(e);
+      }
     }
 
     setHistory(prev => [...prev, { command: trimmed, output }]);

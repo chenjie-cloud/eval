@@ -17,5 +17,5 @@
 - [x] Snake Game is playable
 - [x] Paint app allows basic drawing on a canvas
 - [x] All 12 apps can be launched from the Taskbar/App Menu and function simultaneously
-- [ ] `npm run lint` passes without any errors.
-- [ ] Virtual file system properly handles nested directory creation without creating orphaned nodes (tested with `mkdir a/b/c` and `ls`).
+- [x] `npm run lint` passes without any errors.
+- [x] Virtual file system properly handles nested directory creation without creating orphaned nodes (tested with `mkdir a/b/c` and `ls`).

@@ -1,0 +1,43 @@
+# Tasks
+- [x] Task 1: Initialize Project Setup: Scaffold a new React application with Vite, Tailwind CSS, and Framer Motion.
+  - [x] SubTask 1.1: Run `npm create vite@latest . -- --template react-ts`
+  - [x] SubTask 1.2: Install dependencies: `tailwindcss`, `framer-motion`, `zustand`, `lucide-react`
+  - [x] SubTask 1.3: Configure Tailwind CSS and clear default boilerplate
+- [x] Task 2: Implement Core State Management: Set up Zustand stores for Window Management and Virtual File System.
+  - [x] SubTask 2.1: Create `useWindowStore` (open, close, minimize, maximize, focus, z-index logic)
+  - [x] SubTask 2.2: Create `useFileSystemStore` (read, write, delete, list directories, persist to localStorage)
+- [x] Task 3: Build Desktop Shell UI: Create the main desktop environment, background, taskbar, and app menu.
+  - [x] SubTask 3.1: Implement `Desktop` component (wallpaper, desktop icons)
+  - [x] SubTask 3.2: Implement `Taskbar` component (start button, open apps, system tray)
+  - [x] SubTask 3.3: Implement `AppMenu` component (grid of all available apps)
+- [x] Task 4: Implement Window Manager Component: Create a reusable Draggable/Resizable Window wrapper.
+  - [x] SubTask 4.1: Build `Window` component using Framer Motion for drag/resize
+  - [x] SubTask 4.2: Add title bar with minimize, maximize, and close buttons
+- [x] Task 5: Develop System Apps (Batch 1): Terminal, File Explorer, Text Editor.
+  - [x] SubTask 5.1: Terminal (simulated commands like `ls`, `cd`, `echo`, `clear`)
+  - [x] SubTask 5.2: File Explorer (navigate virtual file system, open files)
+  - [x] SubTask 5.3: Text Editor (read/write text files to virtual file system)
+- [x] Task 6: Develop Utility Apps (Batch 2): Calculator, Settings, System Monitor, Clock.
+  - [x] SubTask 6.1: Calculator (basic arithmetic UI)
+  - [x] SubTask 6.2: Settings (change wallpaper, toggle dark/light mode)
+  - [x] SubTask 6.3: System Monitor (mock CPU/RAM usage, list open windows)
+  - [x] SubTask 6.4: Clock/Calendar (display current time/date, calendar grid)
+- [x] Task 7: Develop Media & Entertainment Apps (Batch 3): Browser, Image Viewer, Media Player, Snake Game, Paint.
+  - [x] SubTask 7.1: Browser (iframe viewer with URL bar)
+  - [x] SubTask 7.2: Image Viewer (display sample static images)
+  - [x] SubTask 7.3: Media Player (HTML5 audio/video player with sample files)
+  - [x] SubTask 7.4: Snake Game (canvas-based classic snake)
+  - [x] SubTask 7.5: Paint (canvas-based drawing app)
+- [x] Task 8: Integration and Polish: Register all apps, refine styling, and ensure responsiveness.
+  - [x] SubTask 8.1: Map all app components to the App Registry
+  - [x] SubTask 8.2: Polish UI/UX (animations, shadows, icons)
+  - [x] SubTask 8.3: Final testing of all 12 apps within the window manager
+
+# Task Dependencies
+- [Task 2] depends on [Task 1]
+- [Task 3] depends on [Task 1]
+- [Task 4] depends on [Task 2]
+- [Task 5] depends on [Task 2, Task 4]
+- [Task 6] depends on [Task 4]
+- [Task 7] depends on [Task 4]
+- [Task 8] depends on [Task 3, Task 5, Task 6, Task 7]

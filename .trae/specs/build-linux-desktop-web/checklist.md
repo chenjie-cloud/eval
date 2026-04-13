@@ -1,0 +1,19 @@
+- [x] Project initialized with React, Vite, Tailwind CSS, and Framer Motion
+- [x] Window Management store handles multiple overlapping windows correctly
+- [x] Virtual File System store persists data via localStorage
+- [x] Desktop background and Taskbar are visible and styled like a Linux DE
+- [x] App Menu opens and displays at least 10 app icons
+- [x] Windows can be dragged, resized, minimized, maximized, and closed
+- [x] Terminal app executes basic mock commands
+- [x] File Explorer navigates directories and interacts with the File System
+- [x] Text Editor reads and saves files
+- [x] Calculator performs basic arithmetic
+- [x] Settings app can change the desktop wallpaper
+- [x] System Monitor displays mock system stats and running processes
+- [x] Clock app shows accurate time and calendar
+- [x] Browser app loads an iframe successfully
+- [x] Image Viewer displays an image
+- [x] Media Player renders audio/video controls
+- [x] Snake Game is playable
+- [x] Paint app allows basic drawing on a canvas
+- [x] All 12 apps can be launched from the Taskbar/App Menu and function simultaneously

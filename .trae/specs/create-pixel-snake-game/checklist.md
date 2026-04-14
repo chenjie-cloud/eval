@@ -4,3 +4,5 @@
 - [x] 蛇撞墙或撞到自己时游戏能够正确判定为结束，并弹出提示。
 - [x] 能够记录并显示当前得分和历史最高分。
 - [x] 提供游戏开始、重新开始的功能，流程无bug。
+- [ ] The game handles the condition where the snake fills the entire grid without freezing.
+- [ ] `localStorage` access is wrapped in a `try...catch` block to handle disabled storage without crashing the game.

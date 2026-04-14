@@ -12,3 +12,4 @@
 - 最终交付复验：执行 `npm ci` / `npm test` / `npm run build` / `npm run typecheck` 均退出码 0，像素风渲染与触控滑动控制满足验收清单。
 - 本次复验确认：当前工作区 `npm ci` / `npm test` / `npm run build` / `npm run typecheck` 均退出码 0，可直接交付像素风贪吃蛇 Web App。
 - 复验确认（Ralph Loop 23/50）：`npm ci` / `npm test` / `npm run build` / `npm run typecheck` 均退出码 0，像素风贪吃蛇 Web App 交付就绪。
+- 复验确认（Ralph Loop 24/50）：`npm ci` / `npm test` / `npm run build` / `npm run typecheck` 均退出码 0，可直接交付像素风贪吃蛇 Web App。

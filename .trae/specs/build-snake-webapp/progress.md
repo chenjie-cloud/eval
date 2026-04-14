@@ -4,3 +4,4 @@
 - 补齐了工程类型检查交付：修复 controller 中 2D context 的类型收窄问题，`npm run typecheck` 通过，并更新任务与验收清单。
 - 最终复验通过：`npm ci` / `npm test` / `npm run build` / `npm run typecheck` 均成功，像素对齐与关闭抗锯齿策略生效。
 - 复验完成：`npm ci` / `npm test` / `npm run build` / `npm run typecheck` 均退出码 0，并抽检像素化渲染与触控滑动输入可用。
+- 再次复验通过：`npm test` / `npm run build` / `npm run typecheck` 均退出码 0，满足交付与验收清单。

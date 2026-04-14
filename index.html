@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Game</title>
+    <!-- 引入像素风格字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-wrapper">
+        <!-- 得分面板 -->
+        <div class="score-panel">
+            <div class="score">SCORE: <span id="current-score">0</span></div>
+            <div class="high-score">HI-SCORE: <span id="best-score">0</span></div>
+        </div>
+        
+        <!-- 游戏容器 -->
+        <div class="game-container" id="game-container">
+            <!-- 游戏主画布，设置特定的宽高 -->
+            <canvas id="game-canvas" width="400" height="400"></canvas>
+            
+            <!-- 游戏结束提示遮罩（初始隐藏） -->
+            <div id="game-over-screen" class="hidden">
+                <h2>GAME OVER</h2>
+                <p>SCORE: <span id="final-score">0</span></p>
+            </div>
+        </div>
+        
+        <!-- 控制按钮 -->
+        <div class="controls">
+            <button id="start-btn" class="pixel-btn">START</button>
+            <button id="pause-btn" class="pixel-btn">PAUSE</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

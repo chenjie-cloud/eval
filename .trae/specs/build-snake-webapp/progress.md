@@ -7,3 +7,4 @@
 - 再次复验通过：`npm test` / `npm run build` / `npm run typecheck` 均退出码 0，满足交付与验收清单。
 - 最终再验收：`npm ci` / `npm test` / `npm run build` / `npm run typecheck` 均退出码 0，可直接交付像素风贪吃蛇 Web App。
 - 交付确认：像素风 Canvas 贪吃蛇已实现并通过构建、测试与类型检查，满足 tasks.md 与 checklist.md 全部验收项。
+- 复验确认：当前工作区 `npm test` / `npm run build` / `npm run typecheck` 仍全部通过，像素风贪吃蛇可直接交付使用。

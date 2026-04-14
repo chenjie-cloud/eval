@@ -22,6 +22,7 @@
   - [x] 确保 build 与 test 在 CI/无交互环境可运行
 - [x] Task 7: 补充使用说明
   - [x] 更新 README：本地运行、构建、操作方式与移动端说明
+- [x] Task 8: 修复 typecheck（npm run typecheck 通过）
 
 # Task Dependencies
 - Task 3 depends on Task 2

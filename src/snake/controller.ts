@@ -69,6 +69,7 @@ export function createController(deps: ControllerDeps) {
 
   const ctx = deps.canvas.getContext("2d");
   if (!ctx) throw new Error("2d context not found");
+  const ctx2d: CanvasRenderingContext2D = ctx;
 
   function syncHud() {
     deps.scoreEl.textContent = String(state.score);
@@ -114,7 +115,7 @@ export function createController(deps: ControllerDeps) {
 
   function renderLoop() {
     resize();
-    render(ctx, state, cellSize);
+    render(ctx2d, state, cellSize);
     window.requestAnimationFrame(renderLoop);
   }
 
@@ -217,4 +218,3 @@ export function createController(deps: ControllerDeps) {
   syncHud();
   window.requestAnimationFrame(renderLoop);
 }
-

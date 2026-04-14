@@ -1,3 +1,4 @@
 - 规划了基于 Vite + TypeScript 的贪吃蛇 Web App：包含引擎、Canvas 渲染、UI/输入、移动端适配与基础测试。
 - 已实现像素风贪吃蛇 Web App：引擎+Canvas 渲染+键盘/触控输入+分数与最高分持久化，并通过 npm test 与 npm run build。
 - 复核了像素化渲染与主题样式实现，且在无交互环境下 `npm test` / `npm run build` 均通过。
+- 补齐了工程类型检查交付：修复 controller 中 2D context 的类型收窄问题，`npm run typecheck` 通过，并更新任务与验收清单。

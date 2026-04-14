@@ -5,3 +5,4 @@
 - [x] 成绩正确：最高分在刷新后仍存在（localStorage 持久化）
 - [x] 移动端可玩：触控可完成开始与控制移动的完整流程，布局不遮挡关键控件
 - [x] 工程可交付：`npm run build` 成功，`npm test`（如有）通过
+- [x] 工程类型检查通过：`npm run typecheck` 成功

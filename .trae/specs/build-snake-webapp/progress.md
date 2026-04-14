@@ -6,3 +6,4 @@
 - 复验完成：`npm ci` / `npm test` / `npm run build` / `npm run typecheck` 均退出码 0，并抽检像素化渲染与触控滑动输入可用。
 - 再次复验通过：`npm test` / `npm run build` / `npm run typecheck` 均退出码 0，满足交付与验收清单。
 - 最终再验收：`npm ci` / `npm test` / `npm run build` / `npm run typecheck` 均退出码 0，可直接交付像素风贪吃蛇 Web App。
+- 交付确认：像素风 Canvas 贪吃蛇已实现并通过构建、测试与类型检查，满足 tasks.md 与 checklist.md 全部验收项。

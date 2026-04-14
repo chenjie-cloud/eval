@@ -19,6 +19,7 @@
 - 复验确认（Ralph Loop 28/50）：任务清单与验收清单均已全勾选，像素风渲染（关闭抗锯齿+像素对齐）与桌面/移动端输入方案完整，交付就绪。
 - 复验确认（Ralph Loop 29/50）：当前工作区 `npm ci` / `npm test` / `npm run build` / `npm run typecheck` 均退出码 0，像素风贪吃蛇 Web App 可直接交付。
 - 复验确认（Ralph Loop 30/50）：执行 `npm ci` / `npm test` / `npm run build` / `npm run typecheck` 均退出码 0，交付就绪。
+- 复验确认（Ralph Loop 36/50）：执行 `npm ci` / `npm test` / `npm run build` / `npm run typecheck` 均退出码 0，像素风贪吃蛇 Web App 交付就绪。
 - 复验确认（Ralph Loop 32/50）：执行 `npm ci` / `npm test` / `npm run build` / `npm run typecheck` 均退出码 0，像素风贪吃蛇 Web App 交付就绪。
 - 复验确认（Ralph Loop 34/50）：执行 `npm ci` / `npm test` / `npm run build` / `npm run typecheck` 均退出码 0，交付就绪。
 - 复验确认（Ralph Loop 35/50）：执行 `npm ci` / `npm test` / `npm run build` / `npm run typecheck` 均退出码 0，像素风贪吃蛇 Web App 交付就绪。

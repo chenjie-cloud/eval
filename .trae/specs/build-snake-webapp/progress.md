@@ -31,3 +31,4 @@
 - 复验确认（Ralph Loop 44/50）：执行 `npm test` / `npm run typecheck` / `npm run build` 均退出码 0，像素风贪吃蛇 Web App 交付就绪。
 - 复验确认（Ralph Loop 46/50）：本轮执行 `npm ci` / `npm test` / `npm run build` / `npm run typecheck` 均退出码 0，像素风贪吃蛇 Web App 交付就绪。
 - 复验确认（Ralph Loop 47/50）：再次执行 `npm ci` / `npm test` / `npm run build` / `npm run typecheck` 均退出码 0（仅提示依赖存在中等风险漏洞），交付就绪。
+- 复验确认（Ralph Loop 48/50）：`npm ci` / `npm test` / `npm run build` / `npm run typecheck` 均退出码 0（提示 5 个中等风险漏洞），像素风贪吃蛇 Web App 交付就绪。

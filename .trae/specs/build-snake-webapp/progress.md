@@ -1,2 +1,2 @@
 - 规划了基于 Vite + TypeScript 的贪吃蛇 Web App：包含引擎、Canvas 渲染、UI/输入、移动端适配与基础测试。
-
+- 已实现像素风贪吃蛇 Web App：引擎+Canvas 渲染+键盘/触控输入+分数与最高分持久化，并通过 npm test 与 npm run build。

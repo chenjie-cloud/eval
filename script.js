@@ -23,7 +23,12 @@ let dy = 0;
 let nextDx = 1;
 let nextDy = 0;
 let score = 0;
-let bestScore = localStorage.getItem('pixelSnakeBestScore') || 0;
+let bestScore = 0;
+try {
+    bestScore = localStorage.getItem('pixelSnakeBestScore') || 0;
+} catch (e) {
+    console.warn('localStorage is disabled', e);
+}
 bestScoreEl.textContent = bestScore;
 
 let gameInterval = null;
@@ -39,6 +44,10 @@ function drawBackground() {
 
 // 随机生成食物
 function spawnFood() {
+    if (snake.length >= tileCount * tileCount) {
+        return;
+    }
+
     let newFood;
     let isOnSnake;
     
@@ -75,7 +84,11 @@ function initGame() {
     currentScoreEl.textContent = score;
     
     // 确保最高分正确显示
-    bestScore = localStorage.getItem('pixelSnakeBestScore') || 0;
+    try {
+        bestScore = localStorage.getItem('pixelSnakeBestScore') || 0;
+    } catch (e) {
+        console.warn('localStorage is disabled', e);
+    }
     bestScoreEl.textContent = bestScore;
     
     // 重置状态
@@ -114,7 +127,11 @@ function handleGameOver() {
     if (score > bestScore) {
         bestScore = score;
         bestScoreEl.textContent = bestScore;
-        localStorage.setItem('pixelSnakeBestScore', bestScore);
+        try {
+            localStorage.setItem('pixelSnakeBestScore', bestScore);
+        } catch (e) {
+            console.warn('localStorage is disabled', e);
+        }
     }
     
     // 显示结束面板
@@ -158,7 +175,11 @@ function update() {
         if (score > bestScore) {
             bestScore = score;
             bestScoreEl.textContent = bestScore;
-            localStorage.setItem('pixelSnakeBestScore', bestScore);
+            try {
+                localStorage.setItem('pixelSnakeBestScore', bestScore);
+            } catch (e) {
+                console.warn('localStorage is disabled', e);
+            }
         }
         
         // 生成新食物

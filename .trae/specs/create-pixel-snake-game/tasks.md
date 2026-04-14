@@ -15,5 +15,5 @@
 - Task 2 depends on Task 1
 - Task 3 depends on Task 2
 
-- [ ] Task 4: Fix infinite loop on win: Handle the edge case in `spawnFood()` when the snake occupies the entire grid to prevent browser freeze.
-- [ ] Task 5: Fix local storage crash: Wrap `localStorage.getItem` and `setItem` in `try...catch` blocks to prevent the script from crashing in environments where storage is disabled.
+- [x] Task 4: Fix infinite loop on win: Handle the edge case in `spawnFood()` when the snake occupies the entire grid to prevent browser freeze.
+- [x] Task 5: Fix local storage crash: Wrap `localStorage.getItem` and `setItem` in `try...catch` blocks to prevent the script from crashing in environments where storage is disabled.

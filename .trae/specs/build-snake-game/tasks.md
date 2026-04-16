@@ -21,3 +21,7 @@
 - Task 3 depends on Task 2
 - Task 4 depends on Task 3
 - Task 5 depends on Task 4
+
+- [ ] Task 6: 修复验证发现的问题
+  - [ ] SubTask 6.1: 修复 `placeFood()` 逻辑，防止食物生成在新蛇头（即未来的蛇身）上，导致食物被困在蛇体内。
+  - [ ] SubTask 6.2: 补充实现原 Task 5.2 中的“按键重新开始游戏的功能”（目前仅支持点击）。

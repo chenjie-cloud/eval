@@ -1,0 +1,295 @@
+:root {
+    --bg-color: #050510;
+    --grid-color: rgba(0, 255, 255, 0.1);
+    --neon-cyan: #0ff;
+    --neon-magenta: #f0f;
+    --neon-yellow: #ff0;
+    --neon-green: #0f0;
+    --neon-red: #f00;
+    
+    --text-color: #fff;
+    --font-main: 'Orbitron', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-main);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+    /* 赛博朋克网格背景 */
+    background-image: 
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 30px 30px;
+    background-position: center center;
+}
+
+/* CRT 扫描线覆盖层 */
+.scanlines {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(
+        to bottom,
+        rgba(255,255,255,0),
+        rgba(255,255,255,0) 50%,
+        rgba(0,0,0,0.2) 50%,
+        rgba(0,0,0,0.2)
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.6;
+}
+
+/* 屏幕轻微闪烁效果 */
+@keyframes flicker {
+    0% { opacity: 0.95; }
+    5% { opacity: 0.85; }
+    10% { opacity: 0.95; }
+    15% { opacity: 1; }
+    100% { opacity: 1; }
+}
+
+.game-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    z-index: 10;
+    animation: flicker 0.15s infinite;
+    position: relative;
+    padding: 20px;
+    border-radius: 10px;
+    background: rgba(5, 5, 16, 0.8);
+    box-shadow: 0 0 50px rgba(0, 255, 255, 0.05);
+}
+
+/* 计分板 */
+.scoreboard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    padding: 10px 20px;
+    border: 2px solid var(--neon-cyan);
+    border-radius: 5px;
+    box-shadow: 0 0 10px var(--neon-cyan), inset 0 0 10px var(--neon-cyan);
+    background: rgba(0, 255, 255, 0.05);
+}
+
+.score-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 100px;
+}
+
+.score-box .label {
+    font-size: 12px;
+    color: var(--neon-cyan);
+    letter-spacing: 2px;
+    text-shadow: 0 0 5px var(--neon-cyan);
+}
+
+.score-box .value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+    font-variant-numeric: tabular-nums;
+}
+
+.high-score-box .label {
+    color: var(--neon-magenta);
+    text-shadow: 0 0 5px var(--neon-magenta);
+}
+
+.high-score-box .value {
+    text-shadow: 0 0 10px var(--neon-magenta), 0 0 20px var(--neon-magenta);
+}
+
+.game-title {
+    font-size: 24px;
+    text-align: center;
+    line-height: 1.1;
+    color: #fff;
+    text-shadow: 
+        0 0 5px #fff,
+        0 0 10px #fff,
+        0 0 20px var(--neon-magenta),
+        0 0 40px var(--neon-magenta);
+    letter-spacing: 4px;
+}
+
+/* 游戏容器与画布 */
+.game-container {
+    position: relative;
+    width: 600px;
+    height: 600px;
+    border: 3px solid var(--neon-cyan);
+    border-radius: 5px;
+    box-shadow: 
+        0 0 15px var(--neon-cyan), 
+        inset 0 0 15px var(--neon-cyan);
+    background-color: #000;
+    overflow: hidden;
+}
+
+#game-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 5px rgba(0, 255, 255, 0.3));
+}
+
+/* 覆盖层 */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+    backdrop-filter: blur(3px);
+}
+
+.overlay.active {
+    display: flex;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.overlay p {
+    margin-top: 25px;
+    font-size: 16px;
+    color: var(--neon-cyan);
+    text-shadow: 0 0 5px var(--neon-cyan);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* 按键样式 */
+.key {
+    display: inline-block;
+    padding: 2px 8px;
+    border: 1px solid var(--neon-magenta);
+    border-radius: 3px;
+    color: var(--neon-magenta);
+    background: rgba(255, 0, 255, 0.1);
+    text-shadow: 0 0 5px var(--neon-magenta);
+    box-shadow: 0 0 5px var(--neon-magenta);
+    margin: 0 2px;
+}
+
+.controls-info {
+    margin-top: 30px;
+    font-size: 12px;
+    color: #888;
+    letter-spacing: 1px;
+}
+
+.final-score-display {
+    margin-top: 20px;
+    font-size: 20px;
+    color: var(--neon-yellow);
+    text-shadow: 0 0 10px var(--neon-yellow);
+}
+
+/* 故障文字效果 (Glitch Text) */
+.glitch-text {
+    font-size: 48px;
+    font-weight: 900;
+    position: relative;
+    color: #fff;
+    text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+    letter-spacing: 5px;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.8;
+}
+
+.glitch-text::before {
+    left: 2px;
+    text-shadow: -2px 0 var(--neon-magenta);
+    clip: rect(24px, 550px, 90px, 0);
+    animation: glitch-anim 3s infinite linear alternate-reverse;
+}
+
+.glitch-text::after {
+    left: -2px;
+    text-shadow: -2px 0 var(--neon-cyan);
+    clip: rect(85px, 550px, 140px, 0);
+    animation: glitch-anim 2.5s infinite linear alternate-reverse;
+}
+
+.error-text {
+    color: #fff;
+    text-shadow: 0 0 10px var(--neon-red), 0 0 20px var(--neon-red), 0 0 40px var(--neon-red);
+}
+
+.error-text::before {
+    text-shadow: -2px 0 var(--neon-red);
+}
+
+.error-text::after {
+    text-shadow: -2px 0 var(--neon-yellow);
+}
+
+@keyframes glitch-anim {
+    0% { clip: rect(21px, 9999px, 94px, 0); }
+    5% { clip: rect(74px, 9999px, 83px, 0); }
+    10% { clip: rect(9px, 9999px, 98px, 0); }
+    15% { clip: rect(41px, 9999px, 20px, 0); }
+    20% { clip: rect(69px, 9999px, 78px, 0); }
+    25% { clip: rect(54px, 9999px, 15px, 0); }
+    30% { clip: rect(20px, 9999px, 63px, 0); }
+    35% { clip: rect(89px, 9999px, 29px, 0); }
+    40% { clip: rect(31px, 9999px, 69px, 0); }
+    45% { clip: rect(93px, 9999px, 16px, 0); }
+    50% { clip: rect(100px, 9999px, 56px, 0); }
+    55% { clip: rect(56px, 9999px, 8px, 0); }
+    60% { clip: rect(64px, 9999px, 45px, 0); }
+    65% { clip: rect(37px, 9999px, 64px, 0); }
+    70% { clip: rect(12px, 9999px, 48px, 0); }
+    75% { clip: rect(70px, 9999px, 88px, 0); }
+    80% { clip: rect(81px, 9999px, 11px, 0); }
+    85% { clip: rect(42px, 9999px, 77px, 0); }
+    90% { clip: rect(55px, 9999px, 3px, 0); }
+    95% { clip: rect(25px, 9999px, 93px, 0); }
+    100% { clip: rect(8px, 9999px, 67px, 0); }
+}

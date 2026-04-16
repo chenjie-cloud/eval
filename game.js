@@ -59,7 +59,6 @@ function update() {
     if (head.x === food.x && head.y === food.y) {
         score += 10;
         scoreElement.innerText = score;
-        placeFood();
         ateFood = true;
     }
     
@@ -80,12 +79,18 @@ function update() {
         }
     }
     
-    draw();
-    
     if (selfCollision) {
+        draw();
         gameOver();
         return;
     }
+
+    // 放置新食物
+    if (ateFood) {
+        placeFood();
+    }
+    
+    draw();
 }
 
 function placeFood() {
@@ -138,6 +143,14 @@ function gameOver() {
 
 // 键盘控制
 document.addEventListener('keydown', (e) => {
+    // 如果游戏结束，按回车或空格重新开始
+    if (isGameOver) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            initGame();
+        }
+        return;
+    }
+
     // 阻止方向键默认的滚动行为
     if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
         e.preventDefault();

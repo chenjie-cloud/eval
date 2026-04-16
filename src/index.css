@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .neon-text-cyan {
+    text-shadow: 0 0 5px #00f3ff, 0 0 10px #00f3ff, 0 0 20px #00f3ff;
+  }
+  
+  .neon-text-pink {
+    text-shadow: 0 0 5px #ff003c, 0 0 10px #ff003c, 0 0 20px #ff003c;
+  }
+  
+  .neon-box-cyan {
+    box-shadow: 0 0 5px #00f3ff, 0 0 10px #00f3ff, inset 0 0 5px #00f3ff;
+  }
+  
+  .neon-box-pink {
+    box-shadow: 0 0 5px #ff003c, 0 0 10px #ff003c, 0 0 20px #ff003c, inset 0 0 10px #ff003c;
+  }
+
+  .grid-bg {
+    background-size: 20px 20px;
+    background-image: 
+      linear-gradient(to right, rgba(0, 243, 255, 0.1) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 243, 255, 0.1) 1px, transparent 1px);
+  }
+}
+
+body {
+  @apply bg-[#0b0914] text-white font-sans m-0 p-0 overflow-hidden;
+}

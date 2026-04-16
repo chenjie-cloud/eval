@@ -3,54 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>赛博贪吃蛇 | Cyber Snake</title>
+    <title>Retro Cyberpunk Game</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="game-wrapper">
-        <!-- 计分板 -->
+    <div class="app-container">
         <header class="scoreboard">
             <div class="score-box">
                 <span class="label">SCORE</span>
-                <span id="current-score" class="value">0000</span>
+                <span class="value" id="score">0000</span>
             </div>
-            <h1 class="game-title">NEON<br>SNAKE</h1>
-            <div class="score-box high-score-box">
+            <div class="score-box">
                 <span class="label">HI-SCORE</span>
-                <span id="high-score" class="value">0000</span>
+                <span class="value" id="hi-score">9999</span>
+            </div>
+            <div class="score-box">
+                <span class="label">LEVEL</span>
+                <span class="value" id="level">1</span>
             </div>
         </header>
 
-        <!-- 游戏主体容器 -->
-        <main class="game-container">
-            <!-- 游戏画布 -->
-            <canvas id="game-canvas" width="600" height="600"></canvas>
-            
-            <!-- 状态覆盖层 -->
-            <div id="start-screen" class="overlay active">
-                <div class="glitch-text" data-text="SYSTEM READY">SYSTEM READY</div>
-                <p>Press <span class="key">SPACE</span> to Initialize</p>
-                <div class="controls-info">Use [W][A][S][D] or [Arrows] to move</div>
-            </div>
-
-            <div id="pause-screen" class="overlay hidden">
-                <div class="glitch-text" data-text="PAUSED">PAUSED</div>
-                <p>Press <span class="key">SPACE</span> or <span class="key">ESC</span> to Resume</p>
-            </div>
-
-            <div id="game-over-screen" class="overlay hidden">
-                <div class="glitch-text error-text" data-text="GAME OVER">GAME OVER</div>
-                <div class="final-score-display">
-                    FINAL SCORE: <span id="final-score-value">0</span>
+        <main class="game-wrapper">
+            <div class="game-container" id="game-container">
+                <canvas id="game-canvas"></canvas>
+                <div class="scanlines"></div>
+                <div class="overlay">
+                    <h1 class="glitch" data-text="READY">READY</h1>
+                    <p class="blink">PRESS START</p>
                 </div>
-                <p>Press <span class="key">SPACE</span> to Reboot</p>
             </div>
         </main>
         
-        <footer class="scanlines"></footer>
+        <footer class="controls-hint">
+            <p>USE <span class="key">W</span> <span class="key">A</span> <span class="key">S</span> <span class="key">D</span> TO MOVE</p>
+        </footer>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>

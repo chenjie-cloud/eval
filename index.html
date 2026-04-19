@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>极简二维码生成</title>
+    <meta
+      name="description"
+      content="粘贴网址或文本链接，即时生成可右键保存的二维码图片。无需注册、无需安装。"
+    />
+    <link rel="stylesheet" href="/assets/styles.css" />
+    <link rel="modulepreload" href="/assets/vendor/qrcode.mjs" />
+    <link rel="modulepreload" href="/assets/vendor/qrcode_UTF8.mjs" />
+  </head>
+  <body>
+    <main class="shell" aria-label="二维码生成器">
+      <header class="head">
+        <div class="brand">
+          <div class="brand__mark" aria-hidden="true"></div>
+          <div class="brand__text">
+            <h1 class="brand__title">二维码</h1>
+            <p class="brand__sub">粘贴内容，1 秒内生成 · 右键即可保存 PNG</p>
+          </div>
+        </div>
+        <div class="pill" role="note" aria-label="隐私声明">
+          不上传 · 不保存 · 不追踪
+        </div>
+      </header>
+
+      <section class="panel">
+        <div class="panel__col">
+          <label class="label" for="payload">粘贴你的网址或文本链接</label>
+          <textarea
+            id="payload"
+            class="input"
+            placeholder="例如：https://example.com\n或：任意文本（含中文/空格/换行）"
+            rows="8"
+            autocapitalize="off"
+            autocomplete="off"
+            autocorrect="off"
+            spellcheck="false"
+          ></textarea>
+          <div class="meta" aria-live="polite">
+            <span id="hint" class="meta__hint">输入后将自动生成，无需点击按钮</span>
+            <span id="count" class="meta__count" aria-label="字符计数">0</span>
+          </div>
+        </div>
+
+        <div class="panel__col panel__preview">
+          <div class="preview" aria-label="二维码预览区">
+            <div id="state" class="state" role="status">等待输入内容</div>
+            <img
+              id="qrImage"
+              class="qr"
+              alt="生成的二维码图片（可右键保存）"
+              decoding="async"
+              loading="eager"
+            />
+          </div>
+          <a
+            id="download"
+            class="download"
+            href="#"
+            download="qrcode.png"
+            aria-label="下载 PNG（可选）"
+            hidden
+            >下载 PNG</a
+          >
+        </div>
+      </section>
+
+      <footer class="foot">
+        <span>提示：二维码识别率取决于内容长度与扫描环境。</span>
+      </footer>
+    </main>
+
+    <script type="module" src="/assets/app.js"></script>
+  </body>
+</html>

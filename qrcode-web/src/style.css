@@ -1,0 +1,251 @@
+:root {
+  --bg: #fbfaf7;
+  --paper: #ffffff;
+  --ink: #101010;
+  --muted: rgba(16, 16, 16, 0.62);
+  --faint: rgba(16, 16, 16, 0.12);
+  --ring: rgba(16, 16, 16, 0.22);
+  --shadow: 0 18px 60px rgba(16, 16, 16, 0.12);
+
+  color: var(--ink);
+  background: radial-gradient(1200px 700px at 15% 10%, rgba(16, 16, 16, 0.06), transparent 55%),
+    radial-gradient(900px 520px at 90% 40%, rgba(16, 16, 16, 0.045), transparent 60%), var(--bg);
+
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Noto Serif CJK SC", "Songti SC", serif;
+  line-height: 1.5;
+  font-weight: 450;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+#app {
+  width: 100%;
+}
+
+.shell {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: clamp(18px, 3.6vw, 40px);
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--faint);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--paper) 86%, transparent);
+  box-shadow: 0 1px 0 rgba(16, 16, 16, 0.04);
+  backdrop-filter: blur(8px);
+}
+
+.brand {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--ink);
+  color: #fff;
+  font-weight: 650;
+  letter-spacing: 0.03em;
+  user-select: none;
+}
+
+.meta {
+  display: grid;
+  gap: 2px;
+}
+
+.title {
+  font-size: 18px;
+  letter-spacing: 0.01em;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.main {
+  margin-top: 16px;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1.25fr 0.75fr;
+  align-items: start;
+}
+
+.panel,
+.preview {
+  border: 1px solid var(--faint);
+  border-radius: 18px;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+
+.panel {
+  padding: 16px;
+}
+
+.label {
+  display: block;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.input {
+  width: 100%;
+  min-height: clamp(190px, 26vh, 360px);
+  resize: vertical;
+  border: 1px solid var(--faint);
+  border-radius: 14px;
+  padding: 14px 14px;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--ink);
+  outline: none;
+  background: linear-gradient(180deg, rgba(16, 16, 16, 0.02), transparent 40%), #fff;
+  transition: box-shadow 140ms ease, border-color 140ms ease;
+}
+
+.input::placeholder {
+  color: rgba(16, 16, 16, 0.42);
+}
+
+.input:focus {
+  border-color: rgba(16, 16, 16, 0.26);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--ring) 36%, transparent);
+}
+
+.hint {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.preview {
+  padding: 16px;
+  display: grid;
+  gap: 12px;
+}
+
+.frame {
+  position: relative;
+  border: 1px dashed rgba(16, 16, 16, 0.22);
+  border-radius: 16px;
+  background: repeating-linear-gradient(
+      135deg,
+      rgba(16, 16, 16, 0.03),
+      rgba(16, 16, 16, 0.03) 10px,
+      rgba(255, 255, 255, 0.0) 10px,
+      rgba(255, 255, 255, 0.0) 22px
+    ),
+    #fff;
+  padding: 14px;
+  min-height: 320px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.empty {
+  text-align: center;
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+}
+
+.emptyTitle {
+  font-size: 14px;
+  color: rgba(16, 16, 16, 0.74);
+}
+
+.emptySub {
+  font-size: 13px;
+  color: rgba(16, 16, 16, 0.5);
+}
+
+.empty.isHidden {
+  display: none;
+}
+
+.qr {
+  display: none;
+  width: min(320px, 100%);
+  height: auto;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 10px 40px rgba(16, 16, 16, 0.12);
+}
+
+.qr.isReady {
+  display: block;
+}
+
+.status {
+  font-size: 13px;
+  color: var(--muted);
+  min-height: 18px;
+}
+
+.status[data-state="generating"] {
+  color: rgba(16, 16, 16, 0.78);
+}
+
+.status[data-state="error"] {
+  color: #7a1c1c;
+}
+
+@media (max-width: 860px) {
+  .main {
+    grid-template-columns: 1fr;
+  }
+  .frame {
+    min-height: 300px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f0f10;
+    --paper: #141416;
+    --ink: #f2f2f2;
+    --muted: rgba(242, 242, 242, 0.66);
+    --faint: rgba(242, 242, 242, 0.12);
+    --ring: rgba(242, 242, 242, 0.22);
+    --shadow: 0 18px 70px rgba(0, 0, 0, 0.42);
+
+    background: radial-gradient(1000px 700px at 18% 12%, rgba(255, 255, 255, 0.08), transparent 55%),
+      radial-gradient(900px 520px at 90% 50%, rgba(255, 255, 255, 0.06), transparent 60%), var(--bg);
+  }
+
+  .brand {
+    background: #f2f2f2;
+    color: #0f0f10;
+  }
+
+  .frame {
+    background: repeating-linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.04),
+        rgba(255, 255, 255, 0.04) 10px,
+        rgba(255, 255, 255, 0.0) 10px,
+        rgba(255, 255, 255, 0.0) 22px
+      ),
+      #0f0f10;
+  }
+}

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>待办事项</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app" aria-label="待办事项应用">
+      <header class="header">
+        <div class="brand">
+          <div class="brand__mark" aria-hidden="true"></div>
+          <div class="brand__text">
+            <h1 class="brand__title">待办事项</h1>
+            <p class="brand__subtitle">把今天要做的事收拢成一张清单。</p>
+          </div>
+        </div>
+      </header>
+
+      <section class="panel" aria-label="新增待办事项">
+        <form id="todo-form" class="composer">
+          <label class="composer__label" for="todo-title">新增</label>
+          <input
+            id="todo-title"
+            class="composer__input"
+            name="title"
+            autocomplete="off"
+            inputmode="text"
+            placeholder="写下要做的事，然后按 Enter"
+            required
+          />
+          <button class="button button--primary" type="submit">添加</button>
+        </form>
+      </section>
+
+      <section class="panel" aria-label="待办事项列表与筛选">
+        <div class="toolbar">
+          <div class="filters" role="tablist" aria-label="筛选">
+            <button class="chip" type="button" data-filter="all" role="tab" aria-selected="true">
+              全部
+            </button>
+            <button class="chip" type="button" data-filter="active" role="tab" aria-selected="false">
+              未完成
+            </button>
+            <button
+              class="chip"
+              type="button"
+              data-filter="completed"
+              role="tab"
+              aria-selected="false"
+            >
+              已完成
+            </button>
+          </div>
+
+          <div class="meta">
+            <span id="remaining" class="meta__count" aria-live="polite"></span>
+            <button id="clear-completed" class="button button--ghost" type="button">
+              清空已完成
+            </button>
+          </div>
+        </div>
+
+        <ul id="todo-list" class="list" aria-label="待办事项"></ul>
+
+        <div id="empty" class="empty" hidden>
+          <p class="empty__title">列表是空的</p>
+          <p class="empty__hint">从上面写下第一件事开始。</p>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

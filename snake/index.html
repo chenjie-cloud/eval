@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>贪吃蛇</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="top">
+        <h1 class="title">贪吃蛇</h1>
+        <div class="controls">
+          <button id="btnStart" type="button">开始</button>
+          <button id="btnPause" type="button">暂停</button>
+          <button id="btnRestart" type="button">重新开始</button>
+        </div>
+        <div class="meta">
+          <div class="score">
+            <span class="label">分数</span>
+            <span id="scoreValue" class="value">0</span>
+          </div>
+          <div id="status" class="status">未开始</div>
+        </div>
+      </header>
+
+      <section class="stage" aria-label="游戏区域">
+        <canvas id="canvas" width="520" height="520"></canvas>
+      </section>
+
+      <footer class="help">
+        <div>方向键或 WASD 控制方向</div>
+        <div>目标：吃到食物变长，撞墙或撞到自己结束</div>
+        <div>本地运行：在本目录执行 <span class="code">python -m http.server 5173</span>，浏览器打开 <span class="code">http://localhost:5173</span></div>
+      </footer>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

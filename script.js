@@ -25,6 +25,7 @@ let highScore = localStorage.getItem('neonSnakeHighScore') || 0;
 let gameLoop;
 let isPlaying = false;
 let gameSpeed = 100;
+let directionQueue = [];
 
 // Initialize high score display
 highScoreElement.textContent = highScore;
@@ -58,7 +59,9 @@ function initGame() {
     ];
     dx = 0;
     dy = -1; // Moving up initially
+    directionQueue = [];
     score = 0;
+    gameSpeed = 100;
     scoreElement.textContent = score;
     placeFood();
 }
@@ -71,7 +74,7 @@ function startGame() {
     gameLoop = setInterval(update, gameSpeed);
 }
 
-function gameOver() {
+function gameOver(isWin = false) {
     isPlaying = false;
     clearInterval(gameLoop);
     
@@ -80,9 +83,9 @@ function gameOver() {
         highScore = score;
         localStorage.setItem('neonSnakeHighScore', highScore);
         highScoreElement.textContent = highScore;
-        overlayTitle.textContent = 'NEW HI-SCORE!';
+        overlayTitle.textContent = isWin ? 'YOU WIN! NEW HI-SCORE!' : 'NEW HI-SCORE!';
     } else {
-        overlayTitle.textContent = 'GAME OVER';
+        overlayTitle.textContent = isWin ? 'YOU WIN!' : 'GAME OVER';
     }
     
     startBtn.textContent = 'PLAY AGAIN';
@@ -90,6 +93,12 @@ function gameOver() {
 }
 
 function update() {
+    if (directionQueue.length > 0) {
+        const nextDir = directionQueue.shift();
+        dx = nextDir.dx;
+        dy = nextDir.dy;
+    }
+
     moveSnake();
     
     if (checkCollision()) {
@@ -145,6 +154,11 @@ function checkFood() {
 }
 
 function placeFood() {
+    if (snake.length === tileCount * tileCount) {
+        gameOver(true);
+        return;
+    }
+
     let newFood;
     let validPlacement = false;
     
@@ -277,15 +291,16 @@ function handleKeyPress(e) {
 }
 
 function changeDirection(newDx, newDy) {
-    // Prevent 180-degree turns
-    if (newDx !== 0 && dx !== 0) return;
-    if (newDy !== 0 && dy !== 0) return;
-    
     // Prevent moving if game is not playing
     if(!isPlaying) return;
 
-    dx = newDx;
-    dy = newDy;
+    let lastDir = directionQueue.length > 0 ? directionQueue[directionQueue.length - 1] : { dx, dy };
+
+    // Prevent 180-degree turns
+    if (newDx !== 0 && lastDir.dx !== 0) return;
+    if (newDy !== 0 && lastDir.dy !== 0) return;
+
+    directionQueue.push({ dx: newDx, dy: newDy });
 }
 
 function handleTouchStart(e) {

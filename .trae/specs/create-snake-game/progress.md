@@ -21,3 +21,12 @@
   - 严重: 单帧内快速按键导致 180 度转身自杀 (经典贪吃蛇 Bug)。
   - 严重: `placeFood()` 函数死循环风险，当游戏趋近完美通关时会挂起浏览器。
   - 中等: 重新开始时没有完全重置状态（遗漏了 `gameSpeed` 重置），破坏游戏体验。
+## Round 5
+
+- Task(s) completed, tests passed, requirements fulfilled: 完成了 Task 5, Task 6, Task 7。修复了 180 度转身自杀漏洞、重新开始时游戏速度异常继承的问题，以及蛇占满屏幕时的食物生成死循环。
+- Any issues discovered or fixed: 解决了快速输入、状态重置、极限边界相关的三个 Bug。
+- Key decisions made and reasoning: 
+  - 引入了 `directionQueue` 来管理同一渲染帧内的连续按键，避免指令丢失且杜绝反向折返。
+  - 在 `initGame` 中增加 `gameSpeed = 100;` 确保重置速度。
+  - 在 `placeFood` 开始前检查蛇身长度是否等于网格总数，若等于则直接调用 `gameOver(true)` 并跳出，防止 `while` 循环死锁。
+- Files changed: `script.js`

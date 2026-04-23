@@ -1,0 +1,2 @@
+- [ ] 成功创建 hello.py 文件
+- [ ] 执行 hello.py 时能正确输出 "Hello World"

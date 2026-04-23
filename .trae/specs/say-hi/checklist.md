@@ -1,0 +1,2 @@
+- [x] Greeting script `hello.sh` is created and executable.
+- [x] Running `hello.sh` outputs "hi".

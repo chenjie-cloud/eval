@@ -30,3 +30,18 @@
   - 在 `initGame` 中增加 `gameSpeed = 100;` 确保重置速度。
   - 在 `placeFood` 开始前检查蛇身长度是否等于网格总数，若等于则直接调用 `gameOver(true)` 并跳出，防止 `while` 循环死锁。
 - Files changed: `script.js`
+
+## Round 6
+
+- **Verdict**: PASS
+- **Scope reviewed**: 核心游戏逻辑修复验证、`directionQueue` 队列输入处理、`gameSpeed` 状态重置、极限边界防死循环机制以及多重点击防护。
+- **Verification results**:
+  - Build/Runtime: Pass。启动 HTTP 服务后，页面加载正常，控制台无报错。
+  - Tests/Coverage: Pass。通过浏览器自动化工具（点击、按键模拟和状态快照）进行了功能验证，核心逻辑运转正常。
+  - Adversarial probes:
+    - 探针1 (快速输入缓冲测试): 验证单帧内快速按键（左 -> 下 -> 右）。结果: `directionQueue` 正确缓冲了指令，防止了 180 度折返自杀，同时允许合法的 U 型转弯。
+    - 探针2 (重开状态重置测试): 验证吃到食物后触发 Game Over 再重新开始。结果: `initGame` 正确重置了 `gameSpeed = 100`，游戏速度恢复正常。
+    - 探针3 (极限边界测试): 代码审查确认 `placeFood()` 首行增加了 `snake.length === tileCount * tileCount` 的判断，成功拦截了填满屏幕时的死循环，并正确触发 `gameOver(true)`。
+    - 探针4 (防抖与并发控制测试): 连续快速点击 "START GAME" / "PLAY AGAIN" 按钮。结果: `startGame` 在开启新循环前正确调用了 `clearInterval(gameLoop)`，未产生定时器堆叠加速的问题。
+  - Checklist audit: 12/12 passed。之前失败的检查项现已全部通过。
+- **Risks and issues**: 无严重问题。代码逻辑严密，异常情况处理得当，游戏可稳定运行。

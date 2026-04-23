@@ -1,0 +1,265 @@
+:root {
+    --bg-color: #050505;
+    --grid-color: #1a1a2e;
+    --neon-pink: #ff2a6d;
+    --neon-cyan: #05d9e8;
+    --neon-blue: #0182cb;
+    --neon-green: #00ff00;
+    --text-color: #fff;
+    --font-main: 'Press Start 2P', cursive;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-main);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+    background-image: 
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 30px 30px;
+    background-position: center center;
+    perspective: 1000px;
+}
+
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    z-index: 10;
+    padding: 20px;
+    background: rgba(5, 5, 5, 0.85);
+    border: 2px solid var(--neon-cyan);
+    border-radius: 15px;
+    box-shadow: 
+        0 0 10px var(--neon-cyan),
+        inset 0 0 10px var(--neon-cyan);
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+}
+
+.neon-text {
+    font-size: 2rem;
+    color: #fff;
+    text-shadow: 
+        0 0 5px #fff,
+        0 0 10px #fff,
+        0 0 20px var(--neon-pink),
+        0 0 40px var(--neon-pink),
+        0 0 80px var(--neon-pink);
+    margin-bottom: 10px;
+    text-align: center;
+    letter-spacing: 2px;
+    animation: pulsate 1.5s infinite alternate;
+}
+
+@keyframes pulsate {
+    100% {
+        text-shadow: 
+            0 0 4px #fff,
+            0 0 11px #fff,
+            0 0 19px #fff,
+            0 0 40px var(--neon-pink),
+            0 0 80px var(--neon-pink),
+            0 0 90px var(--neon-pink);
+    }
+    0% {
+        text-shadow: 
+            0 0 2px #fff,
+            0 0 4px #fff,
+            0 0 6px #fff,
+            0 0 10px var(--neon-pink),
+            0 0 45px var(--neon-pink),
+            0 0 55px var(--neon-pink);
+    }
+}
+
+.scores {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 400px;
+}
+
+.score-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px 15px;
+    border: 1px solid var(--neon-blue);
+    border-radius: 8px;
+    box-shadow: 0 0 8px var(--neon-blue);
+}
+
+.score-box .label {
+    font-size: 0.6rem;
+    color: var(--neon-cyan);
+}
+
+.score-box .value {
+    font-size: 1.2rem;
+    color: #fff;
+    text-shadow: 0 0 5px var(--neon-cyan);
+}
+
+.canvas-wrapper {
+    position: relative;
+    border: 3px solid var(--neon-pink);
+    border-radius: 5px;
+    box-shadow: 
+        0 0 15px var(--neon-pink),
+        0 0 30px var(--neon-pink);
+    overflow: hidden;
+    background: #000;
+}
+
+canvas {
+    display: block;
+    image-rendering: pixelated;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+    backdrop-filter: blur(2px);
+    transition: opacity 0.3s ease;
+}
+
+.overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.neon-button {
+    margin-top: 20px;
+    background: transparent;
+    color: var(--neon-cyan);
+    font-family: var(--font-main);
+    font-size: 1rem;
+    padding: 15px 25px;
+    border: 2px solid var(--neon-cyan);
+    border-radius: 5px;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 
+        0 0 10px var(--neon-cyan),
+        inset 0 0 10px var(--neon-cyan);
+    text-shadow: 0 0 5px var(--neon-cyan);
+    transition: all 0.2s ease;
+}
+
+.neon-button:hover {
+    background: var(--neon-cyan);
+    color: var(--bg-color);
+    box-shadow: 
+        0 0 20px var(--neon-cyan),
+        0 0 40px var(--neon-cyan);
+    text-shadow: none;
+}
+
+.controls-hint {
+    text-align: center;
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.5;
+}
+
+.controls-hint strong {
+    color: var(--neon-cyan);
+}
+
+.d-pad {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.d-pad-middle {
+    display: flex;
+    gap: 40px;
+}
+
+.d-btn {
+    background: rgba(1, 130, 203, 0.2);
+    border: 1px solid var(--neon-blue);
+    color: var(--neon-blue);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 0 10px var(--neon-blue) inset;
+    transition: background 0.1s;
+}
+
+.d-btn:active {
+    background: rgba(1, 130, 203, 0.6);
+    box-shadow: 0 0 15px var(--neon-blue);
+}
+
+/* Responsive adjustments */
+@media (max-width: 500px) {
+    .canvas-wrapper {
+        width: 100%;
+        max-width: 320px;
+    }
+    canvas {
+        width: 100%;
+        height: auto;
+    }
+    .neon-text {
+        font-size: 1.5rem;
+    }
+    .desktop-hint {
+        display: none;
+    }
+    .d-pad {
+        display: flex;
+    }
+    .game-container {
+        border: none;
+        box-shadow: none;
+        background: transparent;
+        padding: 10px;
+        width: 100%;
+    }
+}
+
+@media (min-width: 501px) {
+    .mobile-hint {
+        display: none;
+    }
+}
